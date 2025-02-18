@@ -1,0 +1,23 @@
+{
+    "name": "carminemm/query-craft",
+    "description": "ORM based on Data Mapper pattern, able to connect to MySQL and Postgres",
+    "type": "library",
+    "version": "0.0.1",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "CarmineMM\\QueryCraft\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Carmine Maggio",
+            "email": "carminemaggiom@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.2"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
