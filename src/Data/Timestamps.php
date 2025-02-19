@@ -57,4 +57,14 @@ trait Timestamps
     {
         return $this->timestamps ? $this->updated_field : null;
     }
+
+    /**
+     * Get the deleted at field
+     *
+     * @return null|string
+     */
+    public function getDeletedAtField(): null|string
+    {
+        return $this->softDeletes ? $this->deleted_field : null;
+    }
 }

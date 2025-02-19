@@ -41,7 +41,13 @@ abstract class Entity
             $this->$updatedAtField = $casts->getter($this->$updatedAtField, $this->model, 'datetime');
         }
 
+        if ($deletedAtField = $this->model->getDeletedAtField()) {
+            $this->$deletedAtField = $casts->getter($this->$deletedAtField, $this->model, 'datetime');
+        }
 
+        foreach ($this->getCasts() as $key => $cast) {
+            $this->$key = $casts->getter($this->$key, $this->model, $cast);
+        }
 
         // Timestamps (CreatedAt, UpdatedAt, DeletedAt)
     }

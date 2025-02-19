@@ -54,9 +54,9 @@ abstract class BaseModel
     /**
      * Constructor of the base model
      */
-    public function __construct(Model $model)
+    public function __construct()
     {
-        $this->driver = Connection::pdo($this->connection, $model);
+        $this->driver = Connection::pdo($this->connection, $this);
     }
 
     /**

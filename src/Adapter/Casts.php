@@ -2,8 +2,9 @@
 
 namespace CarmineMM\QueryCraft\Adapter;
 
-use CarmineMM\QueryCraft\Casts\Datetime;
+use CarmineMM\QueryCraft\Casts\DatetimeCasts;
 use CarmineMM\QueryCraft\Casts\JsonCasts;
+use CarmineMM\QueryCraft\Contracts\Casts as ContractsCasts;
 use CarmineMM\QueryCraft\Data\Model;
 
 class Casts
@@ -15,7 +16,8 @@ class Casts
      */
     protected array $defaultCastable = [
         'json' => JsonCasts::class,
-        'datetime' => Datetime::class,
+        'object' => JsonCasts::class,
+        'datetime' => DatetimeCasts::class,
     ];
 
     /**
@@ -39,6 +41,13 @@ class Casts
         // Comprobar si la clase existe
         if (!class_exists($cast)) {
             throw new \Exception("The cast {$cast} does not exist", 500);
+        }
+
+        if (!in_array(ContractsCasts::class, class_implements($cast))) {
+            // must implement the casts contract
+            // If it does not implement it, an exception is launched
+            // Verify if your casts implements the casts contract.
+            throw new \Exception("The cast {$cast} must implement the Casts Contract", 500);
         }
 
         return (new $cast)->{$option}($data, $model);

@@ -8,7 +8,7 @@ use DateTime;
 class UserEntity extends Entity
 {
     public int $id;
-    public string $name;
+    public string|object $name;
     public string $email;
     public ?string $email_verified_at;
     public string $password;
@@ -20,4 +20,8 @@ class UserEntity extends Entity
     public DateTime|string $created_at;
     public $updated_at;
     public $deleted_at;
+
+    protected array $casts = [
+        'name' => 'json',
+    ];
 }

@@ -28,4 +28,14 @@ trait Castable
     {
         return $this->useCasts && count($this->casts) > 0;
     }
+
+    /**
+     * Get the casts
+     *
+     * @return array
+     */
+    public function getCasts(): array
+    {
+        return $this->useCasts ? $this->casts : [];
+    }
 }

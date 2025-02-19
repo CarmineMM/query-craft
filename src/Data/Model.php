@@ -47,7 +47,7 @@ class Model extends BaseModel
             $this->table = strtolower(array_pop($table)) . 's';
         }
 
-        parent::__construct($this);
+        parent::__construct();
     }
 
     /**
