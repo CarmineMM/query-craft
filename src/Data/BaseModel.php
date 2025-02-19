@@ -7,7 +7,7 @@ use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Contracts\Driver;
 use PDO;
 
-abstract class BaseModel extends Timestamps
+abstract class BaseModel
 {
     /**
      * Connection name

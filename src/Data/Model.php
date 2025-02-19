@@ -14,6 +14,8 @@ use CarmineMM\QueryCraft\Casts\Castable;
  */
 class Model extends BaseModel
 {
+    use Timestamps;
+
     /**
      * Table name
      *

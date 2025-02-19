@@ -2,7 +2,7 @@
 
 namespace CarmineMM\QueryCraft\Data;
 
-abstract class Timestamps
+trait Timestamps
 {
     /**
      * Enable all timestamps
@@ -21,21 +21,40 @@ abstract class Timestamps
     /**
      * Fields timestamps
      *
-     * @var boolean
+     * @var null|string
      */
-    protected string $created_field = 'created_at';
+    protected null|string $created_field = 'created_at';
 
     /**
      * Updated at field
      *
-     * @var string
+     * @var null|string
      */
-    protected string $updated_field = 'updated_at';
+    protected null|string $updated_field = 'updated_at';
 
     /**
      * Deleted at field
      *
-     * @var string
+     * @var null|string
      */
-    protected string $deleted_field = 'deleted_at';
+    protected null|string $deleted_field = 'deleted_at';
+
+    /**
+     * Get the created at field
+     *
+     * @return null|string
+     */
+    public function getCreatedAtField(): null|string
+    {
+        return $this->timestamps ? $this->created_field : null;
+    }
+    /**
+     * Get the updated at field
+     *
+     * @return null|string
+     */
+    public function getUpdatedAtField(): null|string
+    {
+        return $this->timestamps ? $this->updated_field : null;
+    }
 }

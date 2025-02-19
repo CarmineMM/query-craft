@@ -9,11 +9,7 @@ trait Castable
      * 
      * @var array
      */
-    protected array $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
-    ];
+    protected array $casts = [];
 
     /**
      * Enables the use of casts, the created_at and updated_at will be transformed,
