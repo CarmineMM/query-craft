@@ -5,6 +5,7 @@ namespace CarmineMM\QueryCraft\Drivers;
 use CarmineMM\QueryCraft\Adapter\SQLBaseDriver;
 use CarmineMM\QueryCraft\Contracts\Driver;
 use CarmineMM\QueryCraft\Data\Model;
+use CarmineMM\QueryCraft\Mapper\Wrapper;
 
 final class PostgresSQL extends SQLBaseDriver implements Driver
 {
@@ -45,6 +46,9 @@ final class PostgresSQL extends SQLBaseDriver implements Driver
      */
     public function all(array $columns = ['*']): mixed
     {
-        return $this->setColumns($columns)->instance('select')->exec();
+        return Wrapper::wrap(
+            $this->setColumns($columns)->instance('select')->exec(),
+            $this->model
+        );
     }
 }

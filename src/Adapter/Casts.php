@@ -4,15 +4,26 @@ namespace CarmineMM\QueryCraft\Adapter;
 
 use CarmineMM\QueryCraft\Casts\JsonCasts;
 
-trait Casts
+class Casts
 {
     /**
      * Default casts
      *
      * @var array
      */
-    protected array $defaultCasts = [
+    protected array $defaultCastable = [
         'json' => JsonCasts::class,
+    ];
+
+    /**
+     * Default casts
+     *
+     * @var array
+     */
+    protected array $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     /**

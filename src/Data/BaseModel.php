@@ -62,9 +62,9 @@ abstract class BaseModel extends Timestamps
     /**
      * Wrap the result of the query
      *
-     * @return string
+     * @return string|int
      */
-    public function getReturnType(): string
+    public function getReturnType(): string|int
     {
         return match ($this->returnType) {
             'object' => \PDO::FETCH_OBJ,

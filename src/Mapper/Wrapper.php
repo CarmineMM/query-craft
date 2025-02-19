@@ -2,13 +2,10 @@
 
 namespace CarmineMM\QueryCraft\Mapper;
 
-use CarmineMM\QueryCraft\Adapter\Casts;
 use CarmineMM\QueryCraft\Data\Model;
 
 final class Wrapper
 {
-    use Casts;
-
     /**
      * Wrap the data
      *
@@ -19,9 +16,20 @@ final class Wrapper
     public static function wrap(array $data, Model $model): mixed
     {
         // Instancia de la entidad basado en el tipo de retorno.
-        $model->getReturnType();
+        $returnType = $model->getReturnType();
 
-        // Apply the casts
+        if (is_int($returnType)) {
+            return $data;
+        }
+
+        $self = new self;
+
+        // foreach ($data as $key => $item) {
+        //     foreach ($item as $property => $value) {
+        //         $data[$key]->$property = $value;
+        //     }
+        // }
+
         return $data;
     }
 }

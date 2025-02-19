@@ -1,9 +1,9 @@
 <?php
 
 require_once __DIR__ . '/vendor/autoload.php';
-require_once __DIR__ . '/User.php';
 
 use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Draft\User;
 
 Connection::connect('default', [
     'driver' => 'pgsql',
@@ -14,4 +14,4 @@ Connection::connect('default', [
 ]);
 
 $user = new User();
-var_dump($user->all());
+var_dump(count($user->all()));

@@ -19,7 +19,7 @@ class Model extends BaseModel
      *
      * @var string
      */
-    protected string $table;
+    protected string $table = '';
 
     /**
      * Fillable fields
@@ -40,7 +40,10 @@ class Model extends BaseModel
      */
     public function __construct()
     {
-        $this->table = $this->table ?? (strtolower(str_replace('\\', '', get_class($this))) . 's');
+        if ($this->table === '') {
+            $table = explode('\\', get_called_class());
+            $this->table = strtolower(array_pop($table)) . 's';
+        }
 
         parent::__construct($this);
     }

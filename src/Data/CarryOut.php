@@ -90,7 +90,7 @@ class CarryOut
             $returnType = $this->model->getReturnType();
             $data = in_array($returnType, [\PDO::FETCH_ASSOC, \PDO::FETCH_OBJ])
                 ? $query->fetchAll($returnType)
-                : $query->fetchAll(\PDO::FETCH_CLASS, $returnType);
+                : $query->fetchAll(\PDO::FETCH_CLASS, $returnType, [$this->model]);
         }
 
 
