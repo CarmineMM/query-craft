@@ -16,11 +16,10 @@ final class Wrapper
      * @param Model $model
      * @return mixed
      */
-    public function wrap(array $data, Model $model): mixed
+    public static function wrap(array $data, Model $model): mixed
     {
-        if (!$model->hasCasts()) {
-            return $data;
-        }
+        // Instancia de la entidad basado en el tipo de retorno.
+        $model->getReturnType();
 
         // Apply the casts
         return $data;

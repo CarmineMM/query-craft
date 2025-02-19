@@ -2,6 +2,8 @@
 
 namespace CarmineMM\QueryCraft\Data;
 
+use CarmineMM\QueryCraft\Casts\Castable;
+
 /**
  * Model class
  * 
@@ -34,21 +36,6 @@ class Model extends BaseModel
     protected array $hidden = [];
 
     /**
-     * Use casts 
-     * 
-     * @var array
-     */
-    protected array $casts = [];
-
-    /**
-     * Enables the use of casts, the created_at and updated_at will be transformed,
-     * and Soft Deletes on dates. In addition to custom Casts.<array> $ casts
-     *
-     * @var boolean
-     */
-    protected bool $useCasts = true;
-
-    /**
      * Constructor of the model
      */
     public function __construct()
@@ -56,16 +43,6 @@ class Model extends BaseModel
         $this->table = $this->table ?? (strtolower(str_replace('\\', '', get_class($this))) . 's');
 
         parent::__construct($this);
-    }
-
-    /**
-     * Solve if you have casts
-     *
-     * @return boolean
-     */
-    public function hasCasts(): bool
-    {
-        return $this->useCasts && count($this->casts) > 0;
     }
 
     /**

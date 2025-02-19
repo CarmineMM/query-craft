@@ -80,6 +80,8 @@ class CarryOut
         try {
             $query->execute($params);
         } catch (\Throwable $th) {
+            // Consultation execution error
+            // If you see this error, it is because there is an error in the SQL consultation.
             throw new \Exception("Error Execute Query: " . $query->errorInfo()[2], 500, $th);
         }
 

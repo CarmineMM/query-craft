@@ -2,6 +2,7 @@
 
 namespace CarmineMM\QueryCraft\Data;
 
+use CarmineMM\QueryCraft\Casts\Castable;
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Contracts\Driver;
 use PDO;
@@ -68,7 +69,12 @@ abstract class BaseModel extends Timestamps
         return match ($this->returnType) {
             'object' => \PDO::FETCH_OBJ,
             'array' => \PDO::FETCH_ASSOC,
-            default => $this->returnType,
+            default => class_exists($this->returnType)
+                ? $this->returnType
+                // If you see an error here, it is because the type of return does not exist.
+                // The return must be a type of valid data of PHP or a class,
+                // Make sure the return is a class or failing an entity.
+                : throw new \Exception("The return type {$this->returnType} does not exist", 500),
         };
     }
 }
