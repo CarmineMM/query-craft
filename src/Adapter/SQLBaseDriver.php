@@ -44,4 +44,54 @@ abstract class SQLBaseDriver extends CarryOut
 
         return $this->exec();
     }
+
+    /**
+     * Where clause for the query
+     *
+     * @param string $column
+     * @param string $sentence
+     * @param string $three
+     * @return static
+     */
+    public function where(string $column, string $sentence, string $three = ''): static
+    {
+        foreach ($this->layout as $key => $value) {
+            if (str_contains($value, 'WHERE')) {
+                $this->layout[$key] = $three
+                    ? str_replace('{where}', "AND {$column} {$sentence} {$three} {where}", $value)
+                    : str_replace('{where}', "AND {$column} = '{$sentence}' {where}", $value);
+            } else {
+                $this->layout[$key] = $three
+                    ? str_replace('{where}', "WHERE {$column} {$sentence} {$three} {where}", $value)
+                    : str_replace('{where}', "WHERE {$column} = '{$sentence}' {where}", $value);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Where clause for the query
+     *
+     * @param string $column
+     * @param string $sentence
+     * @param string $three
+     * @return static
+     */
+    public function orWhere(string $column, string $sentence, string $three = ''): static
+    {
+        foreach ($this->layout as $key => $value) {
+            if (str_contains($value, 'WHERE')) {
+                $this->layout[$key] = $three
+                    ? str_replace('{where}', "OR {$column} {$sentence} {$three} {where}", $value)
+                    : str_replace('{where}', "OR {$column} = '{$sentence}' {where}", $value);
+            } else {
+                $this->layout[$key] = $three
+                    ? str_replace('{where}', "OR WHERE {$column} {$sentence} {$three} {where}", $value)
+                    : str_replace('{where}', "OR WHERE {$column} = '{$sentence}' {where}", $value);
+            }
+        }
+
+        return $this;
+    }
 }

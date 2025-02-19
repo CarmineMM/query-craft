@@ -29,7 +29,7 @@ abstract class Entity
      *
      * @return void
      */
-    public function __loadCasts()
+    public function __loadCasts(): void
     {
         $casts = new Casts;
 
@@ -48,7 +48,5 @@ abstract class Entity
         foreach ($this->getCasts() as $key => $cast) {
             $this->$key = $casts->getter($this->$key, $this->model, $cast);
         }
-
-        // Timestamps (CreatedAt, UpdatedAt, DeletedAt)
     }
 }

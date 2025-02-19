@@ -14,4 +14,4 @@ Connection::connect('default', [
 ]);
 
 $user = new User();
-var_dump($user->all());
+var_dump($user->where('id', 1)->exec());

@@ -5,8 +5,6 @@ namespace CarmineMM\QueryCraft\Contracts;
 /**
  * Driver interface
  * 
- * @method mixed all()
- * 
  * @package CarmineMM\QueryCraft\Contracts
  * @author Carmine Maggio <carminemaggiom@gmail.com>
  * @license MIT
@@ -15,4 +13,8 @@ namespace CarmineMM\QueryCraft\Contracts;
 interface Driver
 {
     public function all(array $columns = ['*']);
+
+    public function where(string $column, string $sentence, string $three = ''): static;
+
+    public function orWhere(string $column, string $sentence, string $three = ''): static;
 }
