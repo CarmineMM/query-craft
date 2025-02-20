@@ -10,8 +10,8 @@ Connection::connect('default', [
     'host' => '127.0.0.1',
     'username' => 'postgres',
     'password' => 'admin',
-    'database' => 'api_ecommerce',
+    'database' => 'captive_portal',
 ]);
 
 $user = new User();
-var_dump($user->where('id', 1)->get());
+var_dump($user->where('id', 1)->first());

@@ -9,11 +9,11 @@ class JsonCasts implements Casts
 {
     public function get(mixed $data, Model $model): mixed
     {
-        return json_decode($data);
+        return json_decode($data, false) ?? $data;
     }
 
     public function set(mixed $data, Model $model): mixed
     {
-        return json_encode($data);
+        return json_encode($data) ?? '[]';
     }
 }

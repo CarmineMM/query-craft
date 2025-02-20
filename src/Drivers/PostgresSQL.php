@@ -5,7 +5,6 @@ namespace CarmineMM\QueryCraft\Drivers;
 use CarmineMM\QueryCraft\Adapter\SQLBaseDriver;
 use CarmineMM\QueryCraft\Contracts\Driver;
 use CarmineMM\QueryCraft\Data\Model;
-use CarmineMM\QueryCraft\Mapper\Wrapper;
 
 final class PostgresSQL extends SQLBaseDriver implements Driver
 {
@@ -18,7 +17,7 @@ final class PostgresSQL extends SQLBaseDriver implements Driver
          *
          * @var array
          */
-        private array $config,
+        array $config,
         /**
          * Model of the PostgresSQL driver
          *
@@ -28,24 +27,13 @@ final class PostgresSQL extends SQLBaseDriver implements Driver
     ) {
         $this->model = $model;
 
-        $port = $this->config['port'] ?? 5432;
+        $port = $config['port'] ?? 5432;
 
         $this->pdo = new \PDO(
-            dsn: "pgsql:host={$this->config['host']};port={$port};dbname={$this->config['database']}",
-            username: $this->config['username'],
-            password: $this->config['password'],
-            options: $this->config['options'] ?? []
+            dsn: "pgsql:host={$config['host']};port={$port};dbname={$config['database']}",
+            username: $config['username'],
+            password: $config['password'],
+            options: $config['options'] ?? []
         );
-    }
-
-    /**
-     * All elements of the table
-     *
-     * @param array $columns
-     * @return array
-     */
-    public function all(array $columns = ['*']): array
-    {
-        return $this->setColumns($columns)->instance('select')->exec();
     }
 }

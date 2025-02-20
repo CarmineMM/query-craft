@@ -35,7 +35,7 @@ class CarryOut
      *
      * @return static
      */
-    private function prepareSql(): static
+    protected function prepareSql(): static
     {
         $columns = implode(', ', $this->columns);
         $this->sql = str_replace('{column}', $columns, $this->sql);

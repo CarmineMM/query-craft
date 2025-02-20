@@ -99,14 +99,72 @@ abstract class SQLBaseDriver extends CarryOut
      * Get elements of the table
      *
      * @param array $columns
-     * @return mixed
+     * @return array
      */
-    public function get(array $columns = ['*']): mixed
+    public function get(array $columns = ['*']): array
     {
         $this->instance('select');
 
         $this->sql = str_replace('{column}', implode(', ', $columns), $this->sql);
 
         return $this->exec();
+    }
+
+    /**
+     * View the SQL query
+     *
+     * @param string $sentence ['select', 'insert', 'update', 'delete']
+     * @return string
+     */
+    public function toSql($sentence = 'select'): string
+    {
+        $this->instance($sentence);
+
+        $this->prepareSql();
+
+        return $this->sql;
+    }
+
+    /**
+     * All elements of the table
+     *
+     * @param array $columns
+     * @return array
+     */
+    public function all(array $columns = ['*']): array
+    {
+        return $this->setColumns($columns)->instance('select')->exec();
+    }
+
+    /**
+     * Limit and offset for the query
+     *
+     * @param integer $limit
+     * @param integer|null $offset
+     * @return static
+     */
+    public function limit(int $limit, ?int $offset = null): static
+    {
+        $this->sql = $offset
+            ? str_replace('{limit}', "LIMIT {$limit} OFFSET {$offset}", $this->sql)
+            : str_replace('{limit}', "LIMIT {$limit}", $this->sql);
+
+        return $this;
+    }
+
+    /**
+     * First element of the table,
+     * and limit 1 in array
+     *
+     * @param array $column
+     * @return mixed
+     */
+    public function first(array $column = ['*']): mixed
+    {
+        return $this
+            ->setColumns($column)
+            ->instance('select')
+            ->limit(1)
+            ->exec()[0] ?? null;
     }
 }

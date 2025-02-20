@@ -104,6 +104,16 @@ class Model extends BaseModel
     }
 
     /**
+     * View the SQL query
+     *
+     * @return string
+     */
+    public function toSql(): string
+    {
+        return $this->driver->toSql();
+    }
+
+    /**
      * Get elements of the table
      *
      * @param array $columns
@@ -112,5 +122,28 @@ class Model extends BaseModel
     public function get(array $columns = ['*']): mixed
     {
         return Wrapper::wrap($this->driver->get($columns), $this);
+    }
+
+    /**
+     * Limit and offset for the query
+     *
+     * @param integer $limit
+     * @param integer|null $offset
+     * @return static
+     */
+    public function limit(int $limit, ?int $offset = null): static
+    {
+        return $this->driver->limit($limit, $offset);
+    }
+
+    /**
+     * First element of the table
+     *
+     * @param array $column
+     * @return mixed
+     */
+    public function first(array $column = ['*']): mixed
+    {
+        return $this->driver->first($column);
     }
 }
