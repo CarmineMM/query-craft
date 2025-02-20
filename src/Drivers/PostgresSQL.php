@@ -42,13 +42,10 @@ final class PostgresSQL extends SQLBaseDriver implements Driver
      * All elements of the table
      *
      * @param array $columns
-     * @return mixed
+     * @return array
      */
-    public function all(array $columns = ['*']): mixed
+    public function all(array $columns = ['*']): array
     {
-        return Wrapper::wrap(
-            $this->setColumns($columns)->instance('select')->exec(),
-            $this->model
-        );
+        return $this->setColumns($columns)->instance('select')->exec();
     }
 }

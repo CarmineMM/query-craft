@@ -10,8 +10,8 @@ Connection::connect('default', [
     'host' => '127.0.0.1',
     'username' => 'postgres',
     'password' => 'admin',
-    'database' => 'cordelia',
+    'database' => 'api_ecommerce',
 ]);
 
 $user = new User();
-var_dump($user->where('id', 1)->exec());
+var_dump($user->where('id', 1)->get());

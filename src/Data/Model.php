@@ -3,6 +3,7 @@
 namespace CarmineMM\QueryCraft\Data;
 
 use CarmineMM\QueryCraft\Casts\Castable;
+use CarmineMM\QueryCraft\Mapper\Wrapper;
 
 /**
  * Model class
@@ -68,7 +69,10 @@ class Model extends BaseModel
      */
     public function all(array $columns = ['*']): array
     {
-        return $this->driver->all($columns);
+        return Wrapper::wrap(
+            $this->driver->all($columns),
+            $this
+        );
     }
 
     /**
@@ -97,5 +101,16 @@ class Model extends BaseModel
     {
         $this->driver->orWhere($column, $sentence, $three);
         return $this;
+    }
+
+    /**
+     * Get elements of the table
+     *
+     * @param array $columns
+     * @return mixed
+     */
+    public function get(array $columns = ['*']): mixed
+    {
+        return Wrapper::wrap($this->driver->get($columns), $this);
     }
 }

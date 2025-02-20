@@ -94,4 +94,19 @@ abstract class SQLBaseDriver extends CarryOut
 
         return $this;
     }
+
+    /**
+     * Get elements of the table
+     *
+     * @param array $columns
+     * @return mixed
+     */
+    public function get(array $columns = ['*']): mixed
+    {
+        $this->instance('select');
+
+        $this->sql = str_replace('{column}', implode(', ', $columns), $this->sql);
+
+        return $this->exec();
+    }
 }
