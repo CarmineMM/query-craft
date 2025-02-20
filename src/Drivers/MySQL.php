@@ -4,6 +4,7 @@ namespace CarmineMM\QueryCraft\Drivers;
 
 use CarmineMM\QueryCraft\Adapter\SQLBaseDriver;
 use CarmineMM\QueryCraft\Contracts\Driver;
+use CarmineMM\QueryCraft\Data\Model;
 
 /**
  * MySQL driver
@@ -23,15 +24,31 @@ final class MySQL extends SQLBaseDriver implements Driver
     public static ?MySQL $instance = null;
 
     /**
-     * Constructor of the MySQL driver
+     * Constructor of the PostgresSQL driver
      */
-    public function __construct()
-    {
-        self::$instance = $this;
-    }
+    public function __construct(
+        /**
+         * Configuration of the PostgresSQL driver
+         *
+         * @var array
+         */
+        array $config,
+        /**
+         * Model of the PostgresSQL driver
+         *
+         * @var Model
+         */
+        Model $model,
+    ) {
+        $this->model = $model;
 
-    public function all(array $columns = ['*'])
-    {
-        # code...
+        $port = $config['port'] ?? 3306;
+
+        $this->pdo = new \PDO(
+            dsn: "mysql:host={$config['host']};port={$port};dbname={$config['database']}",
+            username: $config['username'],
+            password: $config['password'],
+            options: $config['options'] ?? []
+        );
     }
 }

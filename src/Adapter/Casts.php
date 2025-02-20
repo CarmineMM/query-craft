@@ -2,8 +2,7 @@
 
 namespace CarmineMM\QueryCraft\Adapter;
 
-use CarmineMM\QueryCraft\Casts\DatetimeCasts;
-use CarmineMM\QueryCraft\Casts\JsonCasts;
+use CarmineMM\QueryCraft\Casts as TheCasts;
 use CarmineMM\QueryCraft\Contracts\Casts as ContractsCasts;
 use CarmineMM\QueryCraft\Data\Model;
 
@@ -15,9 +14,10 @@ class Casts
      * @var array
      */
     protected array $defaultCastable = [
-        'json' => JsonCasts::class,
-        'object' => JsonCasts::class,
-        'datetime' => DatetimeCasts::class,
+        'json' => TheCasts\JsonCasts::class,
+        'object' => TheCasts\JsonCasts::class,
+        'datetime' => TheCasts\DatetimeCasts::class,
+        'array' => TheCasts\ArrayCasts::class,
     ];
 
     /**
