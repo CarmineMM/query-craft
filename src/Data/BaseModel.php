@@ -77,4 +77,14 @@ abstract class BaseModel
                 : throw new \Exception("The return type {$this->returnType} does not exist", 500),
         };
     }
+
+    /**
+     * Get the connection name
+     *
+     * @return string
+     */
+    public function getConnection(): string
+    {
+        return $this->connection;
+    }
 }

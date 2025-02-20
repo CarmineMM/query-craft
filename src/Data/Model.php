@@ -146,4 +146,16 @@ class Model extends BaseModel
     {
         return $this->driver->first($column);
     }
+
+    /**
+     * Reset the query
+     *
+     * @return static
+     */
+    public function reset(): static
+    {
+        $this->driver->reset();
+
+        return $this;
+    }
 }

@@ -3,6 +3,7 @@
 namespace CarmineMM\QueryCraft\Data;
 
 use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Debug;
 
 class CarryOut
 {
@@ -22,6 +23,18 @@ class CarryOut
      * Columns for the SELECT request
      */
     protected array $columns = ['*'];
+
+    /**
+     * Layouts para las query's
+     *
+     * @var array
+     */
+    protected array $layout = [
+        'select' => 'SELECT {column} {innerQuery} FROM {table} {where} {group} {order} {limit} {offset}',
+        'insert' => 'INSERT INTO {table} ({keys}) VALUES ({values})',
+        //'update' => 'UPDATE %s SET %s',
+        'delete' => 'DELETE FROM {table} {where}',
+    ];
 
     /**
      * Conexión por PDO
@@ -93,26 +106,19 @@ class CarryOut
                 : $query->fetchAll(\PDO::FETCH_CLASS, $returnType, [$this->model]);
         }
 
-
-        $this->sql = '';
-
         if (Connection::$instance->debug) {
             // End time
-            $time = microtime(true) - $startTime;
-            $memory = memory_get_usage() - $startMemory;
+            Debug::addQuery([
+                'query' => $this->sql,
+                'time' => microtime(true) - $startTime,
+                'memory' => memory_get_usage() - $startMemory,
+                'connection' => $this->model->getConnection(),
+            ]);
         }
 
+        $this->reset();
+
         return $data;
-    }
-
-    /**
-     * Obtain the generated SQL
-     */
-    public function toSQL(): string
-    {
-        $this->prepareSql();
-
-        return $this->sql;
     }
 
     /**
@@ -121,6 +127,13 @@ class CarryOut
     public function reset(): static
     {
         $this->sql = '';
+        $this->columns = ['*'];
+        $this->layout =  [
+            'select' => 'SELECT {column} {innerQuery} FROM {table} {where} {group} {order} {limit} {offset}',
+            'insert' => 'INSERT INTO {table} ({keys}) VALUES ({values})',
+            //'update' => 'UPDATE %s SET %s',
+            'delete' => 'DELETE FROM {table} {where}',
+        ];
 
         return $this;
     }
