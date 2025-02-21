@@ -16,11 +16,11 @@ class UserEntity extends Entity
     public DateTime|string $birthdate;
     public ?string $remember_token;
     public ?string $profile_photo_path;
-    public DateTime|string|null $created_at;
+    public DateTime|string|null $created_at = null;
     public DateTime|string|null $updated_at;
     public DateTime|string|null $deleted_at;
 
     protected array $casts = [
-        'name' => 'json',
+        'birthdate' => 'datetime',
     ];
 }

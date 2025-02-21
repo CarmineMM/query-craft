@@ -52,6 +52,16 @@ class Model extends BaseModel
     }
 
     /**
+     * Get the hidden fields
+     *
+     * @return array
+     */
+    public function getHiddenFields(): array
+    {
+        return $this->hidden;
+    }
+
+    /**
      * Get the table name
      *
      * @return string

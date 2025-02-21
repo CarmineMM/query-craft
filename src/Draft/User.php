@@ -9,5 +9,7 @@ class User extends Model
 {
     protected string $returnType = UserEntity::class;
 
-    // protected bool $timestamps = true;
+    protected array $hidden = [
+        // 'password',
+    ];
 }

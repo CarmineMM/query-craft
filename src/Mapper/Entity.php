@@ -25,28 +25,47 @@ abstract class Entity
     }
 
     /**
+     * Hidden fields
+     *
+     * @return void
+     */
+    private function __hiddenFields(): void
+    {
+        foreach ($this->model->getHiddenFields() as $key => $value) {
+            unset($this->$key);
+        }
+    }
+
+    /**
      * Load the casts and apply them to the entity
      *
      * @return void
      */
-    public function __loadCasts(): void
+    private function __loadCasts(): void
     {
         $casts = new Casts;
 
-        if ($createdAtField = $this->model->getCreatedAtField()) {
+        $createdAtField = $this->model->getCreatedAtField();
+        if ($createdAtField  && isset($this->$createdAtField)) {
             $this->$createdAtField = $casts->getter($this->$createdAtField, $this->model, 'datetime');
         }
 
-        if ($updatedAtField = $this->model->getUpdatedAtField()) {
+        $updatedAtField = $this->model->getUpdatedAtField();
+        if ($updatedAtField && isset($this->$updatedAtField)) {
             $this->$updatedAtField = $casts->getter($this->$updatedAtField, $this->model, 'datetime');
         }
 
-        if ($deletedAtField = $this->model->getDeletedAtField()) {
+        $deletedAtField = $this->model->getDeletedAtField();
+        if ($deletedAtField && isset($this->$deletedAtField)) {
             $this->$deletedAtField = $casts->getter($this->$deletedAtField, $this->model, 'datetime');
         }
 
         foreach ($this->getCasts() as $key => $cast) {
-            $this->$key = $casts->getter($this->$key, $this->model, $cast);
+            if (isset($this->$key)) {
+                $this->$key = $casts->getter($this->$key, $this->model, $cast);
+            } else {
+                unset($this->$key);
+            }
         }
     }
 }
