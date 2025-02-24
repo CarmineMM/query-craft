@@ -21,4 +21,4 @@ $user->where('id', 1)->where('name', 'Fulton Avery')->first();
 $user->where('id', 1)->first();
 $user->where('id', 2)->first();
 
-var_dump($user->where('id', 1)->first(['id', 'name', 'password']));
+var_dump(Debug::getQueries());

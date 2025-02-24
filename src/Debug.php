@@ -35,6 +35,11 @@ final class Debug
         return self::$queries;
     }
 
+    /**
+     * Clear queries
+     *
+     * @return void
+     */
     public static function clearQueries()
     {
         self::$queries = [];
