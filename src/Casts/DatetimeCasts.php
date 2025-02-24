@@ -29,6 +29,6 @@ class DatetimeCasts implements Casts
      */
     public function set(mixed $data, Model $model): mixed
     {
-        return $data;
+        return $data instanceof DateTime ? $data->format('Y-m-d H:i:s') : $data;
     }
 }

@@ -19,7 +19,9 @@ final class Debug
 
     /**
      * Get all queries
-     * Nomenclatura: [
+     * Nomenclature: 
+     * <pre>
+     * [
      *      [
      *          'query' => 'SELECT * FROM users',
      *          'time' => 0.1,           // Seconds
@@ -27,6 +29,7 @@ final class Debug
      *          'connection' => 'mysql',
      *      ]
      * ]
+     * </pre>
      *
      * @return array
      */

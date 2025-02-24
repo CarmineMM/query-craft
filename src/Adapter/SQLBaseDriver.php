@@ -5,6 +5,7 @@ namespace CarmineMM\QueryCraft\Adapter;
 use CarmineMM\QueryCraft\Data\Model;
 use CarmineMM\QueryCraft\Data\CarryOut;
 use CarmineMM\QueryCraft\Mapper\Entity;
+use CarmineMM\QueryCraft\Mapper\TempEntity;
 
 abstract class SQLBaseDriver extends CarryOut
 {
@@ -107,7 +108,9 @@ abstract class SQLBaseDriver extends CarryOut
      */
     public function toSql($sentence = 'select'): string
     {
-        $this->instance($sentence);
+        if ($this->sql === '') {
+            $this->instance($sentence);
+        }
 
         $this->prepareSql();
 
@@ -162,20 +165,55 @@ abstract class SQLBaseDriver extends CarryOut
      * Using the fillable fields
      *
      * @param array $values
-     * @return void
+     * @return static
      */
-    public function create(array|Entity $values, Model $model)
+    public function creator(array|Entity $values, Model $model): static
     {
         $this->instance('insert');
         $prepareItems = [];
 
         // Identificar si el modelo contiene un return type del tipo Entity
-        if (!($values instanceof Entity) && is_string($model->getReturnType())) {
-            $values = new ($model->getReturnType($values));
+        if (is_string($model->getReturnType())) {
+            $tempEntity = new TempEntity($this->model);
+            $isEntity = !is_array($values);
+
+            if ($isEntity) {
+                $newValues = [];
+                foreach ($model->getFillable() as $fillable) {
+                    $newValues[$fillable] = $values->{$fillable};
+                }
+                $prepareItems = $newValues;
+            } else {
+                $prepareItems = $values;
+            }
+
+            $values = $tempEntity->setCasts(
+                $isEntity
+                    ? $values->getCasts()
+                    : $tempEntity->getCasts()
+            )
+                ->setAttributes($prepareItems)
+                ->getSetterCasts()
+                ->getAttributes();
         }
 
-        foreach ($model->getFillable() as $fillable) {
-            # code...
-        }
+        $this->sql = strtr($this->sql, [
+            '{keys}' => implode(', ', $model->getFillable()),
+            '{values}' => implode(', ', array_map(fn($item) => "'{$item}'", $values)),
+        ]);
+
+        // $this->sql = str_replace(
+        //     '{keys}',
+        //     implode(', ', $model->getFillable()),
+        //     $this->sql
+        // );
+
+        // $this->sql = str_replace(
+        //     '{values}',
+        //     implode(', ', array_map(fn($item) => "'{$item}'", $values)),
+        //     $this->sql
+        // );
+
+        return $this;
     }
 }

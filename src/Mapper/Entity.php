@@ -12,9 +12,9 @@ class Entity
     /**
      * MOdel
      *
-     * @var Model
+     * @var string|Model
      */
-    public Model $model;
+    public string|Model $model;
 
     /**
      * Constructor of the entity
@@ -39,11 +39,13 @@ class Entity
          */
         array $loadWith = [
             'casts',
-            'hidden'
+            'hidden',
         ]
     ) {
         if ($model) {
             $this->model = $model;
+        } else if (is_string($this->model)) {
+            $this->model = new Model();
         }
 
         $this->setAttributes($attributes, $loadWith);
@@ -68,7 +70,7 @@ class Entity
             }
 
             // Casts Fields and regular fields
-            if (in_array($key, $casts)) {
+            if (in_array($key, array_keys($casts))) {
                 $this->$key = $director->getter($value, $this->model, $casts[$key]);
             } else {
                 $this->$key = $value;

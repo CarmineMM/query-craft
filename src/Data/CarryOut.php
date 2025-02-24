@@ -90,7 +90,8 @@ abstract class CarryOut
         $this->prepareSql();
 
         // Verificar si la consulta existe en cache
-        if ($this->model->hasCache() && Cache::has($this->sql)) {
+        // No guardar consultar que sean muy largas
+        if ($this->model->hasCache() && strlen($this->sql) < 60 && Cache::has($this->sql)) {
             $get = Cache::get($this->sql);
 
             if (Connection::$instance->debug) {
@@ -100,6 +101,7 @@ abstract class CarryOut
                 Debug::addQuery([
                     'query' => $this->sql,
                     'time' => $endtime,
+                    'ms' => round($endtime * 1000, 3) . ' ms',
                     'memory' => memory_get_usage() - $startMemory,
                     'connection' => $this->model->getConnection(),
                     'cache' => true,
@@ -134,7 +136,7 @@ abstract class CarryOut
                 $data = array_map(fn($item) => new $returnType($item, $this->model), $data);
             }
 
-            if ($this->model->hasCache()) {
+            if ($this->model->hasCache() && strlen($this->sql) < 60) {
                 Cache::set($this->sql, $data);
             }
         }
@@ -146,6 +148,7 @@ abstract class CarryOut
             Debug::addQuery([
                 'query' => $this->sql,
                 'time' => $endtime,
+                'ms' => round($endtime * 1000, 3) . ' ms',
                 'memory' => memory_get_usage() - $startMemory,
                 'connection' => $this->model->getConnection(),
                 'cache' => false,

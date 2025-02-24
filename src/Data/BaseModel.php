@@ -2,7 +2,6 @@
 
 namespace CarmineMM\QueryCraft\Data;
 
-use CarmineMM\QueryCraft\Casts\Castable;
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Contracts\Driver;
 use CarmineMM\QueryCraft\Mapper\Entity;
@@ -103,13 +102,13 @@ abstract class BaseModel
      *
      * @return string|int|Entity
      */
-    public function getReturnType(array $instanceWith = null): string|int|Entity
+    public function getReturnType(): string|int
     {
         return match ($this->returnType) {
             'object' => \PDO::FETCH_OBJ,
             'array' => \PDO::FETCH_ASSOC,
             default => class_exists($this->returnType)
-                ? ($instanceWith === null ? $this->returnType : new $this->returnType($this, $instanceWith))
+                ? $this->returnType
                 // If you see an error here, it is because the type of return does not exist.
                 // The return must be a type of valid data of PHP or a class,
                 // Make sure the return is a class or failing an entity.

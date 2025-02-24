@@ -54,7 +54,7 @@ class Casts
     }
 
     /**
-     * Casts de tipo getter
+     * Getter type casts
      *
      * @param mixed $data
      * @param string $cast
@@ -68,5 +68,23 @@ class Casts
         }
 
         return $this->applyCast($data, $cast, $model, 'get');
+    }
+
+    /**
+     * Set casts
+     *
+     * @param mixed $data
+     * @param Model $model
+     * @param string $cast
+     * @return mixed
+     */
+    public function setter(mixed $data, Model $model, string $cast): mixed
+    {
+        // Comprobar si el cast predeterminado existe
+        if (isset($this->defaultCastable[$cast])) {
+            return $this->applyCast($data, $this->defaultCastable[$cast], $model, 'set');
+        }
+
+        return $this->applyCast($data, $cast, $model, 'set');
     }
 }

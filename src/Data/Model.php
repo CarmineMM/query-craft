@@ -2,7 +2,7 @@
 
 namespace CarmineMM\QueryCraft\Data;
 
-use CarmineMM\QueryCraft\Casts\Castable;
+use CarmineMM\QueryCraft\Mapper\Entity;
 use CarmineMM\QueryCraft\Mapper\Wrapper;
 
 /**
@@ -158,6 +158,30 @@ class Model extends BaseModel
     public function reset(): static
     {
         $this->driver->reset();
+
+        return $this;
+    }
+
+    /**
+     * Create one element
+     *
+     * @param array|Entity $values
+     * @return void
+     */
+    public function create(array|Entity $values)
+    {
+        return $this->driver->create($values, $this);
+    }
+
+    /**
+     * Create one element
+     *
+     * @param array|Entity $values
+     * @return static
+     */
+    public function creator(array|Entity $values): static
+    {
+        $this->driver->creator($values, $this);
 
         return $this;
     }

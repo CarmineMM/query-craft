@@ -6,6 +6,7 @@ use CarmineMM\QueryCraft\Cache;
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Debug;
 use CarmineMM\QueryCraft\Draft\User;
+use CarmineMM\QueryCraft\Draft\UserEntity;
 
 Connection::connect('default', [
     'driver' => 'pgsql',
@@ -24,4 +25,12 @@ $user->where('id', 2)->first();
 $user->where('id', 2)->first();
 
 // var_dump($user->where('id', 1)->first());
-var_dump(Debug::getQueries());
+// var_dump();
+var_dump(
+    $user->creator(new UserEntity([
+        'name' => 'Carmine Maggio',
+        'email' => 'carminemaggiom@gmail.com',
+        'birthdate' => new DateTime('2000-01-01')
+    ]))
+        ->toSql()
+);
