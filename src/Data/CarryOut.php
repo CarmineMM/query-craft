@@ -6,7 +6,7 @@ use CarmineMM\QueryCraft\Cache;
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Debug;
 
-class CarryOut
+abstract class CarryOut
 {
     /**
      * Model
@@ -90,7 +90,7 @@ class CarryOut
         $this->prepareSql();
 
         // Verificar si la consulta existe en cache
-        if (Connection::$instance->cache && Cache::has($this->sql)) {
+        if ($this->model->hasCache() && Cache::has($this->sql)) {
             $get = Cache::get($this->sql);
 
             if (Connection::$instance->debug) {
@@ -127,7 +127,7 @@ class CarryOut
                 ? $query->fetchAll($returnType)
                 : $query->fetchAll(\PDO::FETCH_CLASS, $returnType, [$this->model]);
 
-            if (Connection::$instance->cache) {
+            if ($this->model->hasCache()) {
                 Cache::set($this->sql, $data);
             }
         }

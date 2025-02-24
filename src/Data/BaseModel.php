@@ -24,6 +24,13 @@ abstract class BaseModel
     protected string $returnType = 'array';
 
     /**
+     * Using cache
+     *
+     * @var boolean
+     */
+    protected bool $cache = true;
+
+    /**
      * PDO Connection
      *
      * @var PDO
@@ -57,6 +64,30 @@ abstract class BaseModel
     public function __construct()
     {
         $this->driver = Connection::pdo($this->connection, $this);
+        $this->cache = Connection::$instance->cache;
+    }
+
+    /**
+     * Use cache in queries or this query
+     *
+     * @param boolean $useCache
+     * @return static
+     */
+    public function useCache(bool $useCache = true): static
+    {
+        $this->cache = $useCache;
+
+        return $this;
+    }
+
+    /**
+     * Check if the model has cache
+     *
+     * @return boolean
+     */
+    public function hasCache(): bool
+    {
+        return $this->cache;
     }
 
     /**
