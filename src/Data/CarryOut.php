@@ -5,6 +5,7 @@ namespace CarmineMM\QueryCraft\Data;
 use CarmineMM\QueryCraft\Cache;
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Debug;
+use CarmineMM\QueryCraft\Draft\UserEntity;
 use CarmineMM\QueryCraft\Mapper\Entity;
 
 abstract class CarryOut
@@ -129,8 +130,8 @@ abstract class CarryOut
                 : $query->fetchAll(\PDO::FETCH_ASSOC);
 
             // Si es una entidad, establecer la instancia
-            if ($returnType instanceof Entity) {
-                $data = new $returnType($this->model, $data);
+            if (is_string($returnType)) {
+                $data = array_map(fn($item) => new $returnType($this->model, $item), $data);
             }
 
             if ($this->model->hasCache()) {

@@ -6,7 +6,7 @@ use CarmineMM\QueryCraft\Adapter\Casts;
 use CarmineMM\QueryCraft\Data\Model;
 use DateTime;
 
-abstract class Entity
+class Entity
 {
     use Castable;
 
@@ -45,18 +45,28 @@ abstract class Entity
      * @param array $attributes
      * @return void
      */
-    private function setAttributes(array $attributes, array $loadWith): void {}
-
-    /**
-     * Hidden fields
-     *
-     * @return void
-     */
-    private function __hiddenFields(): void
+    private function setAttributes(array $attributes, array $loadWith): void
     {
-        foreach ($this->model->getHiddenFields() as $key => $value) {
-            unset($this->$key);
+        $hiddenFields = in_array('hidden', $loadWith) ? $this->model->getHiddenFields() : [];
+        $casts = in_array('casts', $loadWith) ? $this->getCasts() : [];
+        $director = new Casts;
+
+        foreach ($attributes as $key => $value) {
+            // Hidden fields
+            if (in_array($key, $hiddenFields)) {
+                continue;
+            }
+
+            // Casts Fields and regular fields
+            if (in_array($key, $casts)) {
+                $this->$key = $director->getter($value, $this->model, $casts[$key]);
+            } else {
+                $this->$key = $value;
+            }
         }
+
+        // Cargar los timestamps casts
+        $this->__loadTimestamps($director);
     }
 
     /**
@@ -64,10 +74,8 @@ abstract class Entity
      *
      * @return void
      */
-    private function __loadCasts(): void
+    private function __loadTimestamps(Casts $casts): void
     {
-        $casts = new Casts;
-
         $createdAtField = $this->model->getCreatedAtField();
         if ($createdAtField  && isset($this->$createdAtField)) {
             $this->$createdAtField = $casts->getter($this->$createdAtField, $this->model, 'datetime');
@@ -81,14 +89,6 @@ abstract class Entity
         $deletedAtField = $this->model->getDeletedAtField();
         if ($deletedAtField && isset($this->$deletedAtField)) {
             $this->$deletedAtField = $casts->getter($this->$deletedAtField, $this->model, 'datetime');
-        }
-
-        foreach ($this->getCasts() as $key => $cast) {
-            if (isset($this->$key)) {
-                $this->$key = $casts->getter($this->$key, $this->model, $cast);
-            } else {
-                unset($this->$key);
-            }
         }
     }
 }
