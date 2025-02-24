@@ -26,7 +26,7 @@ class Cache
      * @param mixed $value
      * @return void
      */
-    public static function add(string $key, mixed $value): void
+    public static function set(string $key, mixed $value): void
     {
         self::$cache[$key] = $value;
     }
@@ -43,14 +43,27 @@ class Cache
     }
 
     /**
+     * Check item in cache
+     *
+     * @param string $key
+     * @return boolean
+     */
+    public static function has(string $key): bool
+    {
+        return isset(self::$cache[$key]);
+    }
+
+    /**
      * Get Or create
      *
      * @param string $key
      * @param mixed $value
      * @return mixed
      */
-    public static function remember(string $key, mixed $value): mixed
+    public static function remember(string $key, mixed $value, bool $active = true): mixed
     {
-        return self::$cache[$key] ?? self::$cache[$key] = $value;
+        return !$active
+            ? null
+            : (self::$cache[$key] ?? self::$cache[$key] = $value);
     }
 }

@@ -33,6 +33,13 @@ final class Connection
     public bool $debug = false;
 
     /**
+     * Cache queries
+     *
+     * @var boolean
+     */
+    public bool $cache = true;
+
+    /**
      * Instancia de la conexión
      *
      * @var Connection|null
@@ -82,6 +89,21 @@ final class Connection
         }
 
         static::$instance->debug = $set;
+    }
+
+    /**
+     * Deactivate cache in queries
+     *
+     * @param boolean $useCache
+     * @return void
+     */
+    public static function disabledCache(bool $useCache = false): void
+    {
+        if (is_null(static::$instance)) {
+            static::$instance = new self;
+        }
+
+        static::$instance->cache = $useCache;
     }
 
     /**

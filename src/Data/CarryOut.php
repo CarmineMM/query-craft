@@ -2,6 +2,7 @@
 
 namespace CarmineMM\QueryCraft\Data;
 
+use CarmineMM\QueryCraft\Cache;
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Debug;
 
@@ -88,6 +89,26 @@ class CarryOut
 
         $this->prepareSql();
 
+        // Verificar si la consulta existe en cache
+        if (Connection::$instance->cache && Cache::has($this->sql)) {
+            $get = Cache::get($this->sql);
+
+            if (Connection::$instance->debug) {
+                // End time
+                Debug::addQuery([
+                    'query' => $this->sql,
+                    'time' => microtime(true) - $startTime,
+                    'memory' => memory_get_usage() - $startMemory,
+                    'connection' => $this->model->getConnection(),
+                    'cache' => true,
+                ]);
+            }
+
+            $this->reset();
+
+            return $get;
+        }
+
         $query = $this->pdo->prepare($this->sql);
 
         try {
@@ -105,6 +126,10 @@ class CarryOut
             $data = in_array($returnType, [\PDO::FETCH_ASSOC, \PDO::FETCH_OBJ])
                 ? $query->fetchAll($returnType)
                 : $query->fetchAll(\PDO::FETCH_CLASS, $returnType, [$this->model]);
+
+            if (Connection::$instance->cache) {
+                Cache::set($this->sql, $data);
+            }
         }
 
         if (Connection::$instance->debug) {
@@ -114,6 +139,7 @@ class CarryOut
                 'time' => microtime(true) - $startTime,
                 'memory' => memory_get_usage() - $startMemory,
                 'connection' => $this->model->getConnection(),
+                'cache' => false,
             ]);
         }
 
