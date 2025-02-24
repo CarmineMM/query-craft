@@ -5,6 +5,7 @@ namespace CarmineMM\QueryCraft\Data;
 use CarmineMM\QueryCraft\Casts\Castable;
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Contracts\Driver;
+use CarmineMM\QueryCraft\Mapper\Entity;
 use PDO;
 
 abstract class BaseModel
@@ -52,6 +53,13 @@ abstract class BaseModel
     protected string $primaryKey = 'id';
 
     /**
+     * Fillable fields
+     *
+     * @var array
+     */
+    protected array $fillable = [];
+
+    /**
      * Indicates if the model's ID is auto-incrementing.
      *
      * @var bool
@@ -93,15 +101,15 @@ abstract class BaseModel
     /**
      * Wrap the result of the query
      *
-     * @return string|int
+     * @return string|int|Entity
      */
-    public function getReturnType(): string|int
+    public function getReturnType(array $instanceWith = null): string|int|Entity
     {
         return match ($this->returnType) {
             'object' => \PDO::FETCH_OBJ,
             'array' => \PDO::FETCH_ASSOC,
             default => class_exists($this->returnType)
-                ? $this->returnType
+                ? ($instanceWith === null ? $this->returnType : new $this->returnType($this, $instanceWith))
                 // If you see an error here, it is because the type of return does not exist.
                 // The return must be a type of valid data of PHP or a class,
                 // Make sure the return is a class or failing an entity.
@@ -117,5 +125,15 @@ abstract class BaseModel
     public function getConnection(): string
     {
         return $this->connection;
+    }
+
+    /**
+     * Get fillable fields
+     *
+     * @return array
+     */
+    public function getFillable(): array
+    {
+        return $this->fillable;
     }
 }

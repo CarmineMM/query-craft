@@ -4,6 +4,7 @@ namespace CarmineMM\QueryCraft\Adapter;
 
 use CarmineMM\QueryCraft\Data\Model;
 use CarmineMM\QueryCraft\Data\CarryOut;
+use CarmineMM\QueryCraft\Mapper\Entity;
 
 abstract class SQLBaseDriver extends CarryOut
 {
@@ -154,5 +155,27 @@ abstract class SQLBaseDriver extends CarryOut
             ->instance('select')
             ->limit(1)
             ->exec()[0] ?? null;
+    }
+
+    /**
+     * Create a new element in BD,
+     * Using the fillable fields
+     *
+     * @param array $values
+     * @return void
+     */
+    public function create(array|Entity $values, Model $model)
+    {
+        $this->instance('insert');
+        $prepareItems = [];
+
+        // Identificar si el modelo contiene un return type del tipo Entity
+        if (!($values instanceof Entity) && is_string($model->getReturnType())) {
+            $values = new ($model->getReturnType($values));
+        }
+
+        foreach ($model->getFillable() as $fillable) {
+            # code...
+        }
     }
 }

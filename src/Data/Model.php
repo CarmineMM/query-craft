@@ -25,13 +25,6 @@ class Model extends BaseModel
     protected string $table = '';
 
     /**
-     * Fillable fields
-     *
-     * @var array
-     */
-    protected array $fillable = [];
-
-    /**
      * Hidden fields
      *
      * @var array

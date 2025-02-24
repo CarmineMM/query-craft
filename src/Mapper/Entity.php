@@ -19,11 +19,33 @@ abstract class Entity
          *
          * @var Model
          */
-        public Model $model
+        public Model $model,
+
+        /**
+         * Data of the entity
+         *
+         * @var array
+         */
+        array $attributes = [],
+
+        /**
+         * Load include, casts, hidden's fields
+         */
+        array $loadWith = [
+            'casts',
+            'hidden'
+        ]
     ) {
-        $this->__hiddenFields();
-        $this->__loadCasts();
+        $this->setAttributes($attributes, $loadWith);
     }
+
+    /**
+     * SetAttributes
+     *
+     * @param array $attributes
+     * @return void
+     */
+    private function setAttributes(array $attributes, array $loadWith): void {}
 
     /**
      * Hidden fields
