@@ -5,8 +5,6 @@ namespace CarmineMM\QueryCraft\Data;
 use CarmineMM\QueryCraft\Cache;
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Debug;
-use CarmineMM\QueryCraft\Draft\UserEntity;
-use CarmineMM\QueryCraft\Mapper\Entity;
 
 abstract class CarryOut
 {
@@ -96,10 +94,12 @@ abstract class CarryOut
             $get = Cache::get($this->sql);
 
             if (Connection::$instance->debug) {
+                $endtime = microtime(true) - $startTime;
+
                 // End time
                 Debug::addQuery([
                     'query' => $this->sql,
-                    'time' => microtime(true) - $startTime,
+                    'time' => $endtime,
                     'memory' => memory_get_usage() - $startMemory,
                     'connection' => $this->model->getConnection(),
                     'cache' => true,
@@ -131,7 +131,7 @@ abstract class CarryOut
 
             // Si es una entidad, establecer la instancia
             if (is_string($returnType)) {
-                $data = array_map(fn($item) => new $returnType($this->model, $item), $data);
+                $data = array_map(fn($item) => new $returnType($item, $this->model), $data);
             }
 
             if ($this->model->hasCache()) {
@@ -140,10 +140,12 @@ abstract class CarryOut
         }
 
         if (Connection::$instance->debug) {
+            $endtime = microtime(true) - $startTime;
+
             // End time
             Debug::addQuery([
                 'query' => $this->sql,
-                'time' => microtime(true) - $startTime,
+                'time' => $endtime,
                 'memory' => memory_get_usage() - $startMemory,
                 'connection' => $this->model->getConnection(),
                 'cache' => false,

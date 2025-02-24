@@ -4,29 +4,35 @@ namespace CarmineMM\QueryCraft\Mapper;
 
 use CarmineMM\QueryCraft\Adapter\Casts;
 use CarmineMM\QueryCraft\Data\Model;
-use DateTime;
 
 class Entity
 {
     use Castable;
 
     /**
+     * MOdel
+     *
+     * @var Model
+     */
+    public Model $model;
+
+    /**
      * Constructor of the entity
      */
     public function __construct(
-        /**
-         * Model of the entity 
-         *
-         * @var Model
-         */
-        public Model $model,
-
         /**
          * Data of the entity
          *
          * @var array
          */
         array $attributes = [],
+
+        /**
+         * Model of the entity 
+         *
+         * @var Model
+         */
+        Model $model = null,
 
         /**
          * Load include, casts, hidden's fields
@@ -36,6 +42,10 @@ class Entity
             'hidden'
         ]
     ) {
+        if ($model) {
+            $this->model = $model;
+        }
+
         $this->setAttributes($attributes, $loadWith);
     }
 
