@@ -149,12 +149,12 @@ class Model extends BaseModel
     /**
      * First element of the table
      *
-     * @param array $column
+     * @param array $columns
      * @return mixed
      */
-    public function first(array $column = ['*']): mixed
+    public function first(array $columns = ['*']): mixed
     {
-        return $this->driver->first($column);
+        return $this->driver->first($columns);
     }
 
     /**

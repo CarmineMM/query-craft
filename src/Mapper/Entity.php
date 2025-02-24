@@ -21,6 +21,7 @@ abstract class Entity
          */
         public Model $model
     ) {
+        $this->__hiddenFields();
         $this->__loadCasts();
     }
 
