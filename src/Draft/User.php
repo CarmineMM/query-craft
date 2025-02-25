@@ -12,6 +12,7 @@ class User extends Model
     protected array $fillable = [
         'name',
         'birthdate',
+        'email',
     ];
 
     protected array $hidden = [

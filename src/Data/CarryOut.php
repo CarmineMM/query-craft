@@ -26,6 +26,13 @@ abstract class CarryOut
     protected array $columns = ['*'];
 
     /**
+     * Data to insert o update
+     *
+     * @var array
+     */
+    protected array $data = [];
+
+    /**
      * Layouts para las query's
      *
      * @var array
@@ -139,6 +146,13 @@ abstract class CarryOut
             if ($this->model->hasCache() && strlen($this->sql) < 60) {
                 Cache::set($this->sql, $data);
             }
+        }
+        // Si es de tipo create
+        else if (strpos($this->sql, 'INSERT') !== false) {
+            $data = $this->data;
+
+
+            $data[$this->model->getPrimaryKey()] = $this->pdo->lastInsertId();
         }
 
         if (Connection::$instance->debug) {

@@ -197,23 +197,26 @@ abstract class SQLBaseDriver extends CarryOut
                 ->getAttributes();
         }
 
+        array_map(fn($item) => $this->data[] = Sanitizer::do($item), $values);
+
         $this->sql = strtr($this->sql, [
             '{keys}' => implode(', ', $model->getFillable()),
-            '{values}' => implode(', ', array_map(fn($item) => "'{$item}'", $values)),
+            // Set Placeholders
+            '{values}' => implode(',', array_fill(0, count($model->getFillable()), '?')),
         ]);
 
-        // $this->sql = str_replace(
-        //     '{keys}',
-        //     implode(', ', $model->getFillable()),
-        //     $this->sql
-        // );
-
-        // $this->sql = str_replace(
-        //     '{values}',
-        //     implode(', ', array_map(fn($item) => "'{$item}'", $values)),
-        //     $this->sql
-        // );
-
         return $this;
+    }
+
+    /**
+     * Create a new element in BD
+     *
+     * @param array|Entity $values
+     * @param Model $model
+     * @return array
+     */
+    public function create(array|Entity $values, Model $model): array
+    {
+        return $this->creator($values, $model)->exec($this->data);
     }
 }

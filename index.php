@@ -27,10 +27,9 @@ $user->where('id', 2)->first();
 // var_dump($user->where('id', 1)->first());
 // var_dump();
 var_dump(
-    $user->creator(new UserEntity([
+    $user->create(new UserEntity([
         'name' => 'Carmine Maggio',
         'email' => 'carminemaggiom@gmail.com',
         'birthdate' => new DateTime('2000-01-01')
     ]))
-        ->toSql()
 );

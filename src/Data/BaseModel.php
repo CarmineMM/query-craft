@@ -75,6 +75,16 @@ abstract class BaseModel
     }
 
     /**
+     * Get primary key
+     *
+     * @return string|integer
+     */
+    public function getPrimaryKey(): string|int
+    {
+        return $this->primaryKey;
+    }
+
+    /**
      * Use cache in queries or this query
      *
      * @param boolean $useCache

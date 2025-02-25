@@ -166,9 +166,9 @@ class Model extends BaseModel
      * Create one element
      *
      * @param array|Entity $values
-     * @return void
+     * @return array
      */
-    public function create(array|Entity $values)
+    public function create(array|Entity $values): array
     {
         return $this->driver->create($values, $this);
     }
