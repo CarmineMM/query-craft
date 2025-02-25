@@ -4,7 +4,9 @@ namespace CarmineMM\QueryCraft\Casts;
 
 use CarmineMM\QueryCraft\Contracts\Casts;
 use CarmineMM\QueryCraft\Data\Model;
+use CarmineMM\QueryCraft\DB;
 use DateTime;
+use DateTimeZone;
 
 class DatetimeCasts implements Casts
 {
@@ -17,7 +19,11 @@ class DatetimeCasts implements Casts
      */
     public function get(mixed $data, Model $model): mixed
     {
-        return is_string($data) ? new DateTime($data) : $data;
+        return is_string($data)
+            ? (new DateTime($data))->setTimezone(
+                new DateTimeZone(DB::getTimezone())
+            )
+            : $data;
     }
 
     /**
@@ -29,6 +35,8 @@ class DatetimeCasts implements Casts
      */
     public function set(mixed $data, Model $model): mixed
     {
-        return $data instanceof DateTime ? $data->format('Y-m-d H:i:s') : $data;
+        return $data instanceof DateTime
+            ? $data->setTimezone(new DateTimeZone(DB::getTimezone()))->format('Y-m-d H:i:s')
+            : $data;
     }
 }

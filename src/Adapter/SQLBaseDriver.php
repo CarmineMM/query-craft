@@ -4,8 +4,11 @@ namespace CarmineMM\QueryCraft\Adapter;
 
 use CarmineMM\QueryCraft\Data\Model;
 use CarmineMM\QueryCraft\Data\CarryOut;
+use CarmineMM\QueryCraft\DB;
 use CarmineMM\QueryCraft\Mapper\Entity;
 use CarmineMM\QueryCraft\Mapper\TempEntity;
+use DateTime;
+use DateTimeZone;
 
 abstract class SQLBaseDriver extends CarryOut
 {
@@ -170,6 +173,7 @@ abstract class SQLBaseDriver extends CarryOut
     public function creator(array|Entity $values, Model $model): static
     {
         $this->instance('insert');
+        $insertFields = $model->getFillable();
         $prepareItems = [];
 
         // Identificar si el modelo contiene un return type del tipo Entity
@@ -197,12 +201,27 @@ abstract class SQLBaseDriver extends CarryOut
                 ->getAttributes();
         }
 
+        // Verificar si se tienen que insertar fields
+        if ($this->model->hasTimestamps()) {
+            $date = (new DateTime())
+                ->setTimezone(new DateTimeZone(DB::getTimezone()))
+                ->format('Y-m-d H:i:s');
+
+            if ($createdField = $this->model->getCreatedAtField()) {
+                $values[$createdField] = $date;
+            }
+
+            if ($updatedField = $this->model->getUpdatedAtField()) {
+                $values[$updatedField] = $date;
+            }
+        }
+
         array_map(fn($item) => $this->data[] = Sanitizer::do($item), $values);
 
         $this->sql = strtr($this->sql, [
-            '{keys}' => implode(', ', $model->getFillable()),
+            '{keys}' => implode(', ', $insertFields),
             // Set Placeholders
-            '{values}' => implode(',', array_fill(0, count($model->getFillable()), '?')),
+            '{values}' => implode(',', array_fill(0, count($insertFields), '?')),
         ]);
 
         return $this;

@@ -40,6 +40,16 @@ trait Timestamps
     protected null|string $deleted_field = 'deleted_at';
 
     /**
+     * Indica si se hace uso de los timestamps
+     *
+     * @return boolean
+     */
+    public function hasTimestamps(): bool
+    {
+        return $this->timestamps;
+    }
+
+    /**
      * Get the created at field
      *
      * @return null|string
@@ -48,6 +58,7 @@ trait Timestamps
     {
         return $this->timestamps ? $this->created_field : null;
     }
+
     /**
      * Get the updated at field
      *
