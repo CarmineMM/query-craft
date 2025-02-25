@@ -224,7 +224,7 @@ abstract class SQLBaseDriver extends CarryOut
         foreach ($values as $key => $value) {
             $keys[] = $key;
             $placeholder[] = ':' . $key;
-            $this->data[':' . $key] = Sanitizer::do($value);
+            $this->data[$key] = Sanitizer::string($value);
         }
 
         $this->sql = strtr($this->sql, [

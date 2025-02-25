@@ -38,7 +38,7 @@ $user->where('id', 2)->first();
 var_dump(
     $user->create([
         'name' => 'Carmine',
-        'email' => 'carminemaggio2@gmail.com',
+        'email' => 'carminemaggio4@gmail.com',
         'birthdate' => '2001-01-01',
         'address' => 'Por ahi...'
     ])

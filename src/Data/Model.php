@@ -2,6 +2,7 @@
 
 namespace CarmineMM\QueryCraft\Data;
 
+use CarmineMM\QueryCraft\Adapter\Sanitizer;
 use CarmineMM\QueryCraft\Mapper\Entity;
 use CarmineMM\QueryCraft\Mapper\Wrapper;
 
@@ -73,7 +74,7 @@ class Model extends BaseModel
     public function all(array $columns = ['*']): array
     {
         return Wrapper::wrap(
-            $this->driver->all($columns),
+            $this->driver->all(Sanitizer::strings($columns)),
             $this
         );
     }
@@ -88,6 +89,10 @@ class Model extends BaseModel
      */
     public function where(string $column, string $sentence, string $three = ''): static
     {
+        $column = Sanitizer::string($column);
+        $sentence = Sanitizer::string($sentence);
+        $three = Sanitizer::string($three);
+
         $this->driver->where($column, $sentence, $three);
         return $this;
     }
@@ -102,6 +107,10 @@ class Model extends BaseModel
      */
     public function orWhere(string $column, string $sentence, string $three = ''): static
     {
+        $column = Sanitizer::string($column);
+        $sentence = Sanitizer::string($sentence);
+        $three = Sanitizer::string($three);
+
         $this->driver->orWhere($column, $sentence, $three);
         return $this;
     }
@@ -124,7 +133,10 @@ class Model extends BaseModel
      */
     public function get(array $columns = ['*']): mixed
     {
-        return Wrapper::wrap($this->driver->get($columns), $this);
+        return Wrapper::wrap(
+            $this->driver->get(Sanitizer::strings($columns)),
+            $this
+        );
     }
 
     /**
@@ -136,6 +148,12 @@ class Model extends BaseModel
      */
     public function limit(int $limit, ?int $offset = null): static
     {
+        $limit = Sanitizer::integer($limit);
+
+        if ($offset) {
+            $offset = Sanitizer::integer($offset);
+        }
+
         return $this->driver->limit($limit, $offset);
     }
 
@@ -147,7 +165,7 @@ class Model extends BaseModel
      */
     public function first(array $columns = ['*']): mixed
     {
-        return $this->driver->first($columns);
+        return $this->driver->first(Sanitizer::strings($columns));
     }
 
     /**
