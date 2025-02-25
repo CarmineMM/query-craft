@@ -209,19 +209,28 @@ abstract class SQLBaseDriver extends CarryOut
 
             if ($createdField = $this->model->getCreatedAtField()) {
                 $values[$createdField] = $date;
+                $insertFields[] = $createdField;
             }
 
             if ($updatedField = $this->model->getUpdatedAtField()) {
                 $values[$updatedField] = $date;
+                $insertFields[] = $updatedField;
             }
         }
 
-        array_map(fn($item) => $this->data[] = Sanitizer::do($item), $values);
+        $placeholder = [];
+        $keys = [];
+
+        foreach ($values as $key => $value) {
+            $keys[] = $key;
+            $placeholder[] = ':' . $key;
+            $this->data[':' . $key] = Sanitizer::do($value);
+        }
 
         $this->sql = strtr($this->sql, [
-            '{keys}' => implode(', ', $insertFields),
+            '{keys}' => implode(', ', $keys),
             // Set Placeholders
-            '{values}' => implode(',', array_fill(0, count($insertFields), '?')),
+            '{values}' => implode(',', $placeholder),
         ]);
 
         return $this;

@@ -150,8 +150,6 @@ abstract class CarryOut
         // Si es de tipo create
         else if (strpos($this->sql, 'INSERT') !== false) {
             $data = $this->data;
-
-
             $data[$this->model->getPrimaryKey()] = $this->pdo->lastInsertId();
         }
 
@@ -187,6 +185,7 @@ abstract class CarryOut
             //'update' => 'UPDATE %s SET %s',
             'delete' => 'DELETE FROM {table} {where}',
         ];
+        $this->data = [];
 
         return $this;
     }

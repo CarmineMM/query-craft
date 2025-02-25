@@ -2,7 +2,6 @@
 
 namespace CarmineMM\QueryCraft\Draft;
 
-use AllowDynamicProperties;
 use CarmineMM\QueryCraft\Data\Model;
 
 class User extends Model
@@ -13,6 +12,7 @@ class User extends Model
         'name',
         'birthdate',
         'email',
+        'address',
     ];
 
     protected array $hidden = [
