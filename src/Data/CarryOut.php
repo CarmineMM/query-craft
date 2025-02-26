@@ -40,7 +40,7 @@ abstract class CarryOut
     protected array $layout = [
         'select' => 'SELECT {column} {innerQuery} FROM {table} {where} {group} {order} {limit} {offset}',
         'insert' => 'INSERT INTO {table} ({keys}) VALUES ({values})',
-        //'update' => 'UPDATE %s SET %s',
+        'update' => 'UPDATE {table} SET {set} {where}',
         'delete' => 'DELETE FROM {table} {where}',
     ];
 

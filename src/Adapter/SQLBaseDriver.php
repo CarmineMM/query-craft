@@ -179,7 +179,7 @@ abstract class SQLBaseDriver extends CarryOut
 
         // Identificar si el modelo contiene un return type del tipo Entity
         if (is_string($model->getReturnType())) {
-            $tempEntity = new TempEntity($this->model);
+            $tempEntity = new TempEntity($model);
             $isEntity = !is_array($values);
 
             if ($isEntity) {
@@ -264,8 +264,22 @@ abstract class SQLBaseDriver extends CarryOut
             throw new Exception("Your delete doesn't have a Where! 😢", 500);
         }
 
+        // TODO: Verificar que el modelo tiene un deleted at
         $this->instance('delete');
 
         return $this->exec();
+    }
+
+    /**
+     * Update element
+     *
+     * @param array $data
+     * @return array
+     */
+    public function updatable(array $data = []): array
+    {
+        $this->instance('insert');
+
+        return $this->data;
     }
 }
