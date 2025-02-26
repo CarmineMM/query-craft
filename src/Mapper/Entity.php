@@ -4,10 +4,11 @@ namespace CarmineMM\QueryCraft\Mapper;
 
 use CarmineMM\QueryCraft\Adapter\Casts;
 use CarmineMM\QueryCraft\Data\Model;
+use CarmineMM\QueryCraft\Data\Shapeable;
 
 class Entity
 {
-    use Castable;
+    use Castable, Shapeable;
 
     /**
      * MOdel
