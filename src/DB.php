@@ -34,6 +34,13 @@ final class DB
     protected static string $sanitize_encoding = 'UTF-8';
 
     /**
+     * Allow bulk deletes in all models
+     *
+     * @var boolean
+     */
+    protected static bool $allow_bulk_delete = false;
+
+    /**
      * Set timezone based in PHP docs
      * 
      *  @see https://www.php.net/manual/en/timezones.php
@@ -74,5 +81,26 @@ final class DB
     public static function getSanitizeEncoding(): string
     {
         return self::$sanitize_encoding;
+    }
+
+    /**
+     * Allow bulk deletes
+     *
+     * @param boolean $allow
+     * @return void
+     */
+    public static function allowBulkDelete(bool $allow = true): void
+    {
+        self::$allow_bulk_delete = $allow;
+    }
+
+    /**
+     * Is mass deletion allowed
+     *
+     * @return boolean
+     */
+    public static function isMassDeletionAllowed(): bool
+    {
+        return self::$allow_bulk_delete;
     }
 }

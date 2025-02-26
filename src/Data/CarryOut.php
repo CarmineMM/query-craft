@@ -85,7 +85,7 @@ abstract class CarryOut
     }
 
     /**
-     * Ejecutar la consulta
+     * Execute the query
      */
     protected function exec(array $params = []): array
     {
@@ -151,6 +151,16 @@ abstract class CarryOut
         else if (strpos($this->sql, 'INSERT') !== false) {
             $data = $this->data;
             $data[$this->model->getPrimaryKey()] = $this->pdo->lastInsertId();
+        }
+        // Consulta DELETE
+        else if (strpos($this->sql, 'DELETE') !== false) {
+            // Número de filas afectadas
+            $data = ['affected_rows' => $query->rowCount()];
+
+            // Invalidate cache related to deleted data
+            if ($this->model->hasCache()) {
+                Cache::invalidateByTable($this->model->getTable());
+            }
         }
 
         if (Connection::$instance->debug) {

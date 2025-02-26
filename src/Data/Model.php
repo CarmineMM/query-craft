@@ -3,6 +3,7 @@
 namespace CarmineMM\QueryCraft\Data;
 
 use CarmineMM\QueryCraft\Adapter\Sanitizer;
+use CarmineMM\QueryCraft\DB;
 use CarmineMM\QueryCraft\Mapper\Entity;
 use CarmineMM\QueryCraft\Mapper\Wrapper;
 
@@ -33,6 +34,13 @@ class Model extends BaseModel
     protected array $hidden = [];
 
     /**
+     * Allow to eliminate all elements
+     *
+     * @var boolean
+     */
+    public bool $allow_bulk_delete = false;
+
+    /**
      * Constructor of the model
      */
     public function __construct()
@@ -41,6 +49,8 @@ class Model extends BaseModel
             $table = explode('\\', get_called_class());
             $this->table = strtolower(array_pop($table)) . 's';
         }
+
+        $this->allow_bulk_delete = DB::isMassDeletionAllowed();
 
         parent::__construct();
     }

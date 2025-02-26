@@ -66,4 +66,24 @@ class Cache
             ? null
             : (self::$cache[$key] ?? self::$cache[$key] = $value);
     }
+
+    /**
+     * Invalidate by table find, based in cache
+     *
+     * @param string $table
+     * @return array
+     */
+    public static function invalidateByTable(string $table): array
+    {
+        $finds = [];
+
+        foreach (self::$cache as $key => $value) {
+            if (str_contains($key, " FROM {$table} ")) {
+                unset(self::$cache[$key]);
+                $finds[] = $key;
+            }
+        }
+
+        return $finds;
+    }
 }

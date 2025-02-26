@@ -145,4 +145,14 @@ abstract class BaseModel
     {
         return $this->fillable;
     }
+
+    /**
+     * Delete element(s)
+     *
+     * @return array
+     */
+    public function delete(): array
+    {
+        return $this->driver->delete();
+    }
 }

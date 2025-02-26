@@ -9,6 +9,7 @@ use CarmineMM\QueryCraft\Mapper\Entity;
 use CarmineMM\QueryCraft\Mapper\TempEntity;
 use DateTime;
 use DateTimeZone;
+use Exception;
 
 abstract class SQLBaseDriver extends CarryOut
 {
@@ -246,5 +247,25 @@ abstract class SQLBaseDriver extends CarryOut
     public function create(array|Entity $values, Model $model): array
     {
         return $this->creator($values, $model)->exec($this->data);
+    }
+
+    /**
+     * Delete element
+     *
+     * @return array
+     */
+    public function delete(): array
+    {
+        // Verificar si la instancia de delete no ha cambiado
+        if ($this->layout['delete'] === 'DELETE FROM {table} {where}' && !$this->model->allow_bulk_delete) {
+            // Estas lanzando un DELETE sobre una tabla sin antes delimitar por un 'WHERE'
+            // No es necesario aclarar que esto podría eliminar todos los datos de su tabla.
+            // Si quieres permitir esta acción, habilita el allow_bulk_delete en tu modelo o el DB::allowBulkDelete()
+            throw new Exception("Your delete doesn't have a Where! 😢", 500);
+        }
+
+        $this->instance('delete');
+
+        return $this->exec();
     }
 }
