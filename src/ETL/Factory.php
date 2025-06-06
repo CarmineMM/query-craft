@@ -4,6 +4,8 @@ namespace CarmineMM\QueryCraft\ETL;
 
 use CarmineMM\QueryCraft\Data\Model;
 use CarmineMM\QueryCraft\ETL\Transform;
+use CarmineMM\UnitsConversion\Conversion\DigitalUnitsConversion;
+use CarmineMM\UnitsConversion\Conversion\TimeConversion;
 
 /**
  * Constructor para obtener la data
@@ -84,6 +86,7 @@ class Factory
         echo "\nStart Process ETL";
         $startTime = microtime(true);
         $startMemory = memory_get_usage();
+        $dataInserted = 0;
 
         while ($this->extractor->requiredMoreExtract) {
             //- Extract Data from the source
@@ -95,14 +98,16 @@ class Factory
             //- Insert de transformed data
             $load = (new Load($this->toModel))->insert($transformed);
 
-            break;
+            $dataInserted += count($load);
         }
 
         $endTime = microtime(true);
         $endMemory = memory_get_usage();
 
         echo "\nEnd Process ETL";
-        echo "\nTime: " . ($endTime - $startTime);
-        echo "\nMemory: " . ($endMemory - $startMemory);
+        echo "\n\nResumen:";
+        echo "\nTime: " . TimeConversion::fromMilliseconds($endTime - $startTime)->smartConversion();
+        echo "\nMemory: " . DigitalUnitsConversion::fromBytes(($endMemory - $startMemory))->smartConversion();
+        echo "\nData Inserted: {$dataInserted}";
     }
 }

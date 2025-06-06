@@ -15,10 +15,10 @@ class Load
     /**
      * Insert de data
      *
-     * @return void
+     * @return array
      */
-    public function insert(array $data)
+    public function insert(array $data): array
     {
-        $this->toModel->insert($data);
+        return $this->toModel->insert($data);
     }
 }
