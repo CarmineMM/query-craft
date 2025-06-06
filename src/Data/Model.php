@@ -191,7 +191,9 @@ class Model extends BaseModel
             $offset = Sanitizer::integer($offset);
         }
 
-        return $this->driver->limit($limit, $offset);
+        $this->driver->limit($limit, $offset);
+
+        return $this;
     }
 
     /**
@@ -239,5 +241,15 @@ class Model extends BaseModel
         $this->driver->creator($values, $this);
 
         return $this;
+    }
+
+    /**
+     * Insert Data Massively
+     *
+     * @return array
+     */
+    public function insert(array $data): array
+    {
+        return $this->driver->insert($data);
     }
 }

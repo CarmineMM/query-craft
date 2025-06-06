@@ -1,6 +1,6 @@
 <?php
 
-use CarmineMM\QueryCraft\Data\Model;
+namespace CarmineMM\QueryCraft\ETL;
 
 class Transform
 {
@@ -26,9 +26,9 @@ class Transform
      * Transform the data
      *
      * @param array $pairAttributes
-     * @return void
+     * @return array
      */
-    public function transform(array $pairAttributes)
+    public function transform(array $pairAttributes): array
     {
         $this->transformedData = [];
 
@@ -41,5 +41,7 @@ class Transform
 
             $this->transformedData[] = $transformedData;
         }
+
+        return $this->transformedData;
     }
 }

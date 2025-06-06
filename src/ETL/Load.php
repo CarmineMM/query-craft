@@ -8,8 +8,17 @@ class Load
 {
     public function __construct(
         public Model $toModel,
-        public array $data
     ) {
         //
+    }
+
+    /**
+     * Insert de data
+     *
+     * @return void
+     */
+    public function insert(array $data)
+    {
+        $this->toModel->insert($data);
     }
 }

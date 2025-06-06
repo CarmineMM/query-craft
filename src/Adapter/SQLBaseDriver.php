@@ -10,6 +10,7 @@ use CarmineMM\QueryCraft\Mapper\TempEntity;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use InvalidArgumentException;
 
 abstract class SQLBaseDriver extends CarryOut
 {
@@ -248,6 +249,46 @@ abstract class SQLBaseDriver extends CarryOut
         ]);
 
         return $this;
+    }
+
+    /**
+     * Inserta datos a gran escala, no realiza mappers ni timestamps
+     *
+     * @param array $data
+     * @return array
+     */
+    public function insert(array $data): array
+    {
+        $this->instance('insert');
+
+        $placeholder = [];
+        $columns = array_keys(reset($data));
+
+        foreach ($data as $item) {
+            // Aseguramos que cada item sea un array y tenga las mismas claves que el primero
+            if (!is_array($item) || array_keys($item) !== $columns) {
+                // Los items mandados no corresponden con el formato esperado
+                throw new InvalidArgumentException("All items in \$data must have the same keys as the first item.");
+            }
+
+            $placeholdersRow = implode(', ', array_fill(0, count($columns), '?')); // Genera '?, ?, ?'
+            $valuePlaceholders[] = "({$placeholdersRow})"; // Genera '(?, ?, ?)'
+
+            // Recopila los valores para los parámetros de PDO
+            foreach ($columns as $column) {
+                $allParams[] = $item[$column] ?? null;
+            }
+        }
+
+        $this->instance('insert');
+
+        $this->sql = strtr($this->sql, [
+            '{keys}' => implode(', ', $columns),
+            // Set Placeholders
+            '({values})' => implode(',', $valuePlaceholders),
+        ]);
+
+        return $this->unsafeExec($allParams);
     }
 
     /**

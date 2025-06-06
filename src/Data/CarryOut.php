@@ -183,6 +183,29 @@ abstract class CarryOut
     }
 
     /**
+     * Ejecución sin attach sobre la data
+     *
+     * @param array $params
+     * @return array
+     */
+    protected function unsafeExec(array $params = []): array
+    {
+        $this->prepareSql();
+
+        $query = $this->pdo->prepare($this->sql);
+
+        try {
+            $query->execute($params);
+        } catch (\Throwable $th) {
+            // Consultation execution error
+            // If you see this error, it is because there is an error in the SQL consultation.
+            throw new \Exception("Error Execute Query: " . $query->errorInfo()[2], 500, $th);
+        }
+
+        return $params;
+    }
+
+    /**
      * Rest the SQL
      */
     public function reset(): static

@@ -70,6 +70,50 @@ trait Timestamps
     }
 
     /**
+     * Set the created at field
+     *
+     * @param string $field
+     * @return void
+     */
+    public function setCreatedAtField(string $field): void
+    {
+        $this->created_field = $field;
+    }
+
+    /**
+     * Set the updated at field
+     *
+     * @param string $field
+     * @return void
+     */
+    public function setUpdatedAtField(string $field): void
+    {
+        $this->updated_field = $field;
+    }
+
+    /**
+     * Set the deleted at field
+     *
+     * @param string $field
+     * @return void
+     */
+    public function setDeletedAtField(string $field): void
+    {
+        $this->deleted_field = $field;
+    }
+
+    /**
+     * Indica si se hace uso de soft deletes
+     *
+     * @return static
+     */
+    public function setTimestamps(bool $timestamps): static
+    {
+        $this->timestamps = $timestamps;
+        return $this;
+    }
+
+    /**
      * Get the deleted at field
      *
      * @return null|string

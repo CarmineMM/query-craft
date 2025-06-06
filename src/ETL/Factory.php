@@ -3,6 +3,7 @@
 namespace CarmineMM\QueryCraft\ETL;
 
 use CarmineMM\QueryCraft\Data\Model;
+use CarmineMM\QueryCraft\ETL\Transform;
 
 /**
  * Constructor para obtener la data
@@ -15,6 +16,13 @@ class Factory
      * @var Extract
      */
     private Extract $extractor;
+
+    /**
+     * Define que atributos extraer
+     *
+     * @var array
+     */
+    private array $extractAttributes = [];
 
     /**
      * Constructor
@@ -41,7 +49,13 @@ class Factory
             $toModel = $instance;
         }
 
-        $fromModel->setReturnType($this->extractorReturnType);
+        $fromModel
+            ->setReturnType($this->extractorReturnType)
+            ->setTimestamps(false);
+
+        $toModel
+            ->setReturnType($this->extractorReturnType)
+            ->setTimestamps(false);
 
         $this->extractor = new Extract($fromModel);
 
@@ -56,7 +70,7 @@ class Factory
      */
     public function extractAttributes(array $attributes): Factory
     {
-        $this->extractor->setExtractAttributes($attributes);
+        $this->extractAttributes = $attributes;
         return $this;
     }
 
@@ -67,10 +81,28 @@ class Factory
      */
     public function processEtl(): void
     {
+        echo "\nStart Process ETL";
+        $startTime = microtime(true);
+        $startMemory = memory_get_usage();
+
         while ($this->extractor->requiredMoreExtract) {
+            //- Extract Data from the source
             $data = $this->extractor->extract();
-            var_dump($data);
+
+            //- Transform Data
+            $transformed = (new Transform($data))->transform($this->extractAttributes);
+
+            //- Insert de transformed data
+            $load = (new Load($this->toModel))->insert($transformed);
+
             break;
         }
+
+        $endTime = microtime(true);
+        $endMemory = memory_get_usage();
+
+        echo "\nEnd Process ETL";
+        echo "\nTime: " . ($endTime - $startTime);
+        echo "\nMemory: " . ($endMemory - $startMemory);
     }
 }

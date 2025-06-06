@@ -27,4 +27,14 @@ $etl = new Factory(
     (new Model('star_client_local'))->setTable('clients')
 );
 
+$etl->extractAttributes([
+    'id' => 'id',
+    'name' => 'name',
+    'identification' => 'identification',
+    'email' => 'email',
+    'tel' => 'tel',
+    'address' => 'address',
+    'registered_by' => 'registered_by',
+]);
+
 $etl->processEtl();
