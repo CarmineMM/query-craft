@@ -37,7 +37,7 @@ class Factory
         public Model|string $toModel,
 
         public string $extractorReturnType = 'array',
-        public int $splitIn = 1_000
+        public int $splitIn = 10_000
     ) {
         if (is_string($fromModel)) {
             $instance = new Model();
@@ -91,6 +91,10 @@ class Factory
         while ($this->extractor->requiredMoreExtract) {
             //- Extract Data from the source
             $data = $this->extractor->extract();
+
+            if (count($data) < 1) {
+                break;
+            }
 
             //- Transform Data
             $transformed = (new Transform($data))->transform($this->extractAttributes);

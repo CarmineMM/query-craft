@@ -23,18 +23,18 @@ Connection::connect('star_client_local', [
 ]);
 
 $etl = new Factory(
-    (new Model('star_client'))->setTable('clients'),
-    (new Model('star_client_local'))->setTable('clients')
+    fromModel: (new Model('star_client'))->setTable('gift_cards'),
+    toModel: (new Model('star_client_local'))->setTable('gift_cards')
 );
 
 $etl->extractAttributes([
     'id' => 'id',
-    'name' => 'name',
-    'identification' => 'identification',
-    'email' => 'email',
-    'tel' => 'tel',
-    'address' => 'address',
-    'registered_by' => 'registered_by',
+    'client_id' => 'client_id',
+    'amount' => 'amount',
+    'type' => 'type',
+    'redeemed_at' => 'redeemed_at',
+    'status' => 'status',
+    'meta' => 'meta',
 ]);
 
 $etl->processEtl();

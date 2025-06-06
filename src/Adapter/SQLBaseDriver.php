@@ -22,7 +22,9 @@ abstract class SQLBaseDriver extends CarryOut
      */
     protected function instance(string $type = ''): static
     {
-        $this->sql = str_replace('{table}', $this->model->getTable(), $this->layout[$type]);
+        if ($this->sql === '') {
+            $this->sql = str_replace('{table}', $this->model->getTable(), $this->layout[$type]);
+        }
 
         return $this;
     }
@@ -155,7 +157,9 @@ abstract class SQLBaseDriver extends CarryOut
      */
     public function limit(int $limit, ?int $offset = null): static
     {
-        $this->sql = $offset
+        $this->instance('select');
+
+        $this->sql = !is_null($offset)
             ? str_replace('{limit}', "LIMIT {$limit} OFFSET {$offset}", $this->sql)
             : str_replace('{limit}', "LIMIT {$limit}", $this->sql);
 

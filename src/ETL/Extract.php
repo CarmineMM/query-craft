@@ -15,7 +15,7 @@ class Extract
      *
      * @var integer
      */
-    private int $splitIn = 1_000;
+    private int $splitIn = 10_000;
 
     /**
      * Offset
@@ -78,10 +78,11 @@ class Extract
      */
     public function extract(): array
     {
-        $data = $this->model->limit($this->splitIn, $this->offset)->get($this->extractAttributes);
+        $data = $this->model->limit($this->splitIn, $this->offset)->select($this->extractAttributes)->get();
 
         if (count($data) < 1) {
             $this->requiredMoreExtract = false;
+            return [];
         } else {
             $this->offset += $this->splitIn;
         }
