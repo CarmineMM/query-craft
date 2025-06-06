@@ -29,7 +29,7 @@ class Extract
      *
      * @var boolean
      */
-    private bool $requiredMoreExtract = true;
+    public bool $requiredMoreExtract = true;
 
     /**
      * Atributos a extraer

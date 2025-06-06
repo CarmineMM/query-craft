@@ -151,6 +151,18 @@ abstract class BaseModel
     }
 
     /**
+     * Set connection name
+     *
+     * @param string $connection
+     * @return static
+     */
+    public function setConnection(string $connection): static
+    {
+        $this->connection = $connection;
+        return $this;
+    }
+
+    /**
      * Get fillable fields
      *
      * @return array

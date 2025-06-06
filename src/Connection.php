@@ -116,7 +116,8 @@ final class Connection
         string $connection,
         Model $model = null,
     ): mixed {
-        $connections = static::connections();
+        $connections = Connection::connections();
+
         $config = $connections[$connection] ?? null;
         $connection = null;
 

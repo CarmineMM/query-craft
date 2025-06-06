@@ -43,7 +43,7 @@ class Model extends BaseModel
     /**
      * Constructor of the model
      */
-    public function __construct()
+    public function __construct(string $connection = 'default')
     {
         if ($this->table === '') {
             $table = explode('\\', get_called_class());
@@ -51,6 +51,8 @@ class Model extends BaseModel
         }
 
         $this->allow_bulk_delete = DB::isMassDeletionAllowed();
+
+        $this->connection = $connection;
 
         parent::__construct();
     }
@@ -73,6 +75,18 @@ class Model extends BaseModel
     public function getTable(): string
     {
         return $this->table;
+    }
+
+    /**
+     * Set the table name
+     *
+     * @param string $table
+     * @return static
+     */
+    public function setTable(string $table): static
+    {
+        $this->table = $table;
+        return $this;
     }
 
     /**

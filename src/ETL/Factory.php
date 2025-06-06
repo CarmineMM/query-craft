@@ -10,13 +10,6 @@ use CarmineMM\QueryCraft\Data\Model;
 class Factory
 {
     /**
-     * Indica cual es el limite de rows por split
-     *
-     * @var integer
-     */
-    private int $splitIn = 1_000;
-
-    /**
      * Extractor
      *
      * @var Extract
@@ -34,10 +27,13 @@ class Factory
         public Model $toModel,
 
         public string $extractorReturnType = 'array',
+        public int $splitIn = 1_000
     ) {
         $fromModel->setReturnType($this->extractorReturnType);
 
         $this->extractor = new Extract($fromModel);
+
+        $this->extractor->setSplitIn($this->splitIn);
     }
 
     /**
@@ -50,5 +46,18 @@ class Factory
     {
         $this->extractor->setExtractAttributes($attributes);
         return $this;
+    }
+
+    /**
+     * Ejecutar ETL
+     *
+     * @return void
+     */
+    public function processEtl(): void
+    {
+        while ($this->extractor->requiredMoreExtract) {
+            $data = $this->extractor->extract();
+            var_dump($data);
+        }
     }
 }
