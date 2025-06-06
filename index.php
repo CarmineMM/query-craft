@@ -2,6 +2,7 @@
 
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Data\Model;
+use CarmineMM\QueryCraft\ETL\Factory;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -13,7 +14,17 @@ Connection::connect('star_client', [
     'database' => 'star_client',
 ]);
 
-$client = new Model('star_client');
-$client->setTable('clients')->setReturnType('array');
+Connection::connect('star_client_local', [
+    'driver' => 'pgsql',
+    'host' => 'localhost',
+    'username' => 'postgres',
+    'password' => 'admin',
+    'database' => 'star_client',
+]);
 
-var_dump($client->all());
+$etl = new Factory(
+    (new Model('star_client'))->setTable('clients'),
+    (new Model('star_client_local'))->setTable('clients')
+);
+
+$etl->processEtl();

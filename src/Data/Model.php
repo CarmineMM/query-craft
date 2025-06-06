@@ -92,13 +92,13 @@ class Model extends BaseModel
     /**
      * Select all elements of the table
      *
-     * @param array $columns
+     * @param array|null $columns
      * @return array
      */
-    public function all(array $columns = ['*']): array
+    public function all(array|null $columns = null): array
     {
         return Wrapper::wrap(
-            $this->driver->all(Sanitizer::strings($columns)),
+            $this->driver->all($columns === null ? null : Sanitizer::strings($columns)),
             $this
         );
     }
@@ -152,15 +152,28 @@ class Model extends BaseModel
     /**
      * Get elements of the table
      *
-     * @param array $columns
-     * @return mixed
+     * @param array|null $columns
+     * @return mixed    
      */
-    public function get(array $columns = ['*']): mixed
+    public function get(array|null $columns = null): mixed
     {
         return Wrapper::wrap(
-            $this->driver->get(Sanitizer::strings($columns)),
+            $this->driver->get($columns === null ? null : Sanitizer::strings($columns)),
             $this
         );
+    }
+
+    /**
+     * Select instance
+     *
+     * @param array $columns
+     * @return static
+     */
+    public function select(array $columns = ['*']): static
+    {
+        $this->driver->select(Sanitizer::strings($columns));
+
+        return $this;
     }
 
     /**

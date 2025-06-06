@@ -78,7 +78,8 @@ class Extract
      */
     public function extract(): array
     {
-        $data = $this->model->select($this->extractAttributes)->limit($this->splitIn, $this->offset)->get();
+        $data = $this->model->limit($this->splitIn, $this->offset)->get($this->extractAttributes);
+        var_dump($data);
 
         if (count($data) < 1) {
             $this->requiredMoreExtract = false;

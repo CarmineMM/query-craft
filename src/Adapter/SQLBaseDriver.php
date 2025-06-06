@@ -92,14 +92,14 @@ abstract class SQLBaseDriver extends CarryOut
     /**
      * Get elements of the table
      *
-     * @param array $columns
+     * @param array|null $columns
      * @return array
      */
-    public function get(array $columns = ['*']): array
+    public function get(array|null $columns = null): array
     {
         $this->instance('select');
 
-        $this->sql = str_replace('{column}', implode(', ', $columns), $this->sql);
+        $this->sql = str_replace('{column}', implode(', ', $columns ?? $this->columns), $this->sql);
 
         return $this->exec();
     }
@@ -124,12 +124,25 @@ abstract class SQLBaseDriver extends CarryOut
     /**
      * All elements of the table
      *
-     * @param array $columns
+     * @param array|null $columns
      * @return array
      */
-    public function all(array $columns = ['*']): array
+    public function all(array|null $columns = null): array
     {
         return $this->setColumns($columns)->instance('select')->exec();
+    }
+
+    /**
+     * Select instance
+     *
+     * @param array $columns
+     * @return static
+     */
+    public function select(array $columns = ['*']): static
+    {
+        $this->instance('select')->setColumns($columns);
+
+        return $this;
     }
 
     /**

@@ -23,12 +23,24 @@ class Factory
      * @param Model $toModel
      */
     public function __construct(
-        public Model $fromModel,
-        public Model $toModel,
+        public Model|string $fromModel,
+        public Model|string $toModel,
 
         public string $extractorReturnType = 'array',
         public int $splitIn = 1_000
     ) {
+        if (is_string($fromModel)) {
+            $instance = new Model();
+            $instance->setTable($fromModel);
+            $fromModel = $instance;
+        }
+
+        if (is_string($toModel)) {
+            $instance = new Model();
+            $instance->setTable($toModel);
+            $toModel = $instance;
+        }
+
         $fromModel->setReturnType($this->extractorReturnType);
 
         $this->extractor = new Extract($fromModel);
@@ -58,6 +70,7 @@ class Factory
         while ($this->extractor->requiredMoreExtract) {
             $data = $this->extractor->extract();
             var_dump($data);
+            break;
         }
     }
 }
