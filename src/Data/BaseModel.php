@@ -109,6 +109,19 @@ abstract class BaseModel
     }
 
     /**
+     * Set return type
+     *
+     * @param string $returnType
+     * @return static
+     */
+    public function setReturnType(string $returnType): static
+    {
+        $this->returnType = $returnType;
+
+        return $this;
+    }
+
+    /**
      * Wrap the result of the query
      *
      * @return string|int|Entity

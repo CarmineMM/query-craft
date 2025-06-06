@@ -32,7 +32,11 @@ class Factory
     public function __construct(
         public Model $fromModel,
         public Model $toModel,
+
+        public string $extractorReturnType = 'array',
     ) {
+        $fromModel->setReturnType($this->extractorReturnType);
+
         $this->extractor = new Extract($fromModel);
     }
 
