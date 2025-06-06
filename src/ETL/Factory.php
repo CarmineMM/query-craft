@@ -102,7 +102,7 @@ class Factory
             //- Insert de transformed data
             $load = (new Load($this->toModel))->insert($transformed);
 
-            $dataInserted += count($load);
+            $dataInserted += count($data);
         }
 
         $endTime = microtime(true);
@@ -110,8 +110,8 @@ class Factory
 
         echo "\nEnd Process ETL";
         echo "\n\nResumen:";
-        echo "\nTime: " . TimeConversion::fromMilliseconds($endTime - $startTime)->smartConversion();
-        echo "\nMemory: " . DigitalUnitsConversion::fromBytes(($endMemory - $startMemory))->smartConversion();
+        echo "\nTime: " . TimeConversion::fromSeconds($endTime - $startTime)->setSymbolMode('long')->smartConversion();
+        echo "\nMemory: " . DigitalUnitsConversion::fromBytes(($endMemory - $startMemory))->setSymbolMode('short')->smartConversion();
         echo "\nData Inserted: {$dataInserted}";
     }
 }

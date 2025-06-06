@@ -3,6 +3,7 @@
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Data\Model;
 use CarmineMM\QueryCraft\ETL\Factory;
+use CarmineMM\UnitsConversion\Base\Dictionary;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
