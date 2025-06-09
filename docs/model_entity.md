@@ -112,3 +112,10 @@ class User extends Entity
     // ...
 }
 ```
+
+### Use the models and entities quickly
+
+You may not have so much configuration, when using fast models you can omit the entity.
+Check that documentation below.
+
+-   [Models without instance](docs/model_without_instance.md)

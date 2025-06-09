@@ -50,6 +50,25 @@ Connection::connect('config-2', [
 ]);
 ```
 
+## Schema
+
+```php
+use CarmineMM\QueryCraft\Connection;
+
+Connection::connect(
+    name: 'config-1',
+    config: [
+        'driver' => 'mysql',
+        'host' => '127.0.0.1',
+        'username' => 'root',
+        'password' => '',
+        'database' => '',
+        'schema' => 'schema',
+        'options' => [], // PDO options
+    ]
+);
+```
+
 ## Available drivers
 
 Use the text chain syntax to specify the driver
@@ -58,3 +77,4 @@ Use the text chain syntax to specify the driver
 | ------ | ---------- |
 | pgsql  | PostgreSQL |
 | mysql  | MySQL      |
+| sqlsrv | SQL Server |

@@ -29,6 +29,10 @@ final class PostgresSQL extends SQLBaseDriver implements Driver
     ) {
         $this->model = $model;
 
+        if ($this->model->getSchema() === '' && isset($config['schema'])) {
+            $this->model->setSchema($config['schema']);
+        }
+
         $port = $config['port'] ?? 5432;
 
         $this->pdo = Cache::remember(

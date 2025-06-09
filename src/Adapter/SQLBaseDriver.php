@@ -24,7 +24,11 @@ abstract class SQLBaseDriver extends CarryOut
     protected function instance(string $type = ''): static
     {
         if ($this->sql === '') {
-            $this->sql = str_replace('{table}', $this->model->getTable(), $this->layout[$type]);
+            $table = $this->model->getSchema()
+                ? "{$this->model->getSchema()}.{$this->model->getTable()}"
+                : $this->model->getTable();
+
+            $this->sql = str_replace('{table}', $table, $this->layout[$type]);
         }
 
         return $this;

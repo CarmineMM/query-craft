@@ -1,6 +1,9 @@
 # Model Digging Deeper
 
 The models offer more advanced configurations for your extensible classes
+Antes de entrar en este apartado es recomendable esta lectura.
+
+-   [Models and entities](docs/model_entity.md)
 
 ## Bulk Delete
 
@@ -47,6 +50,18 @@ You can also disable the cache for the current connection, so all models that us
 
 ```php
 Connection::disabledCache();
+```
+
+## Schema
+
+By default the schema is empty, but you can modify it
+
+```php
+// For a specific model
+$model->setSchema('schema');
+
+// GetSchema
+$model->getSchema();
 ```
 
 ## Access the driver that uses the models

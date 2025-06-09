@@ -3,7 +3,6 @@
 namespace CarmineMM\QueryCraft\Data;
 
 use CarmineMM\QueryCraft\Cache;
-use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\DB;
 use CarmineMM\QueryCraft\Debug;
 
@@ -222,7 +221,7 @@ abstract class CarryOut
         $this->layout =  [
             'select' => 'SELECT {column} {innerQuery} FROM {table} {where} {group} {order} {limit} {offset}',
             'insert' => 'INSERT INTO {table} ({keys}) VALUES ({values})',
-            //'update' => 'UPDATE %s SET %s',
+            'update' => 'UPDATE {table} SET {set} {where}',
             'delete' => 'DELETE FROM {table} {where}',
         ];
         $this->data = [];

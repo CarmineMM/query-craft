@@ -35,6 +35,10 @@ final class MySQL extends SQLBaseDriver implements Driver
     ) {
         $this->model = $model;
 
+        if ($this->model->getSchema() === '' && isset($config['schema'])) {
+            $this->model->setSchema($config['schema']);
+        }
+
         $port = $config['port'] ?? 3306;
 
         $this->pdo = new \PDO(

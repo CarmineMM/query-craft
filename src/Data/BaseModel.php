@@ -75,6 +75,13 @@ abstract class BaseModel
     public bool $allow_bulk_delete = false;
 
     /**
+     * Schema de la base de datos
+     *
+     * @var string
+     */
+    private string $schema = '';
+
+    /**
      * Constructor of the base model
      */
     public function __construct()
@@ -82,6 +89,28 @@ abstract class BaseModel
         $this->driver = Connection::pdo($this->connection, $this);
         $this->cache = Connection::$instance->cache;
         $this->allow_bulk_delete = DB::isMassDeletionAllowed();
+    }
+
+    /**
+     * Set schema
+     *
+     * @param string $schema
+     * @return static
+     */
+    public function setSchema(string $schema): static
+    {
+        $this->schema = $schema;
+        return $this;
+    }
+
+    /**
+     * Get schema
+     *
+     * @return string
+     */
+    public function getSchema(): string
+    {
+        return $this->schema;
     }
 
     /**
