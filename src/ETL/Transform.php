@@ -37,7 +37,7 @@ class Transform
             $transformedData = [];
 
             foreach ($pairAttributes as $fromData => $toData) {
-                if (is_callable($toData)) {
+                if (is_callable($toData) && $toData != 'abs') {
                     $result = $toData($data);
                     $transformedData[$result[0]] = $result[1];
                 } else {

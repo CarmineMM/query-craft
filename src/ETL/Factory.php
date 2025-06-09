@@ -116,7 +116,7 @@ class Factory
             $endTime = microtime(true);
             $endMemory = memory_get_usage();
 
-            echo "\nEnd Process ETL";
+            echo "\nEnd Process ETL ";
             echo "\n\nResumen:";
             echo "\nTime: " . TimeConversion::fromSeconds($endTime - $startTime)->setSymbolMode('long')->smartConversion();
             echo "\nMemory: " . DigitalUnitsConversion::fromBytes(($endMemory - $startMemory))->setSymbolMode('short')->smartConversion();
