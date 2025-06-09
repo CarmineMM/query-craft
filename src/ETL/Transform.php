@@ -32,11 +32,17 @@ class Transform
     {
         $this->transformedData = [];
 
+
         foreach ($this->getData as $data) {
             $transformedData = [];
 
             foreach ($pairAttributes as $fromData => $toData) {
-                $transformedData[$toData] = $data[$fromData];
+                if (is_callable($toData)) {
+                    $result = $toData($data, $data[$fromData] ?? null);
+                    $transformedData[$result[0]] = $result[1];
+                } else {
+                    $transformedData[$toData] = $data[$fromData];
+                }
             }
 
             $this->transformedData[] = $transformedData;

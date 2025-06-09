@@ -33,7 +33,7 @@ class Entity
          *
          * @var Model
          */
-        Model $model = null,
+        Model $model,
 
         /**
          * Load include, casts, hidden's fields

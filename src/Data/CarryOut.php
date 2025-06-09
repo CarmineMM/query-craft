@@ -202,6 +202,8 @@ abstract class CarryOut
             throw new \Exception("Error Execute Query: " . $query->errorInfo()[2], 500, $th);
         }
 
+        $this->reset();
+
         return $params;
     }
 
