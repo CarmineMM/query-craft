@@ -4,6 +4,7 @@ namespace CarmineMM\QueryCraft\Data;
 
 use CarmineMM\QueryCraft\Cache;
 use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\DB;
 use CarmineMM\QueryCraft\Debug;
 
 abstract class CarryOut
@@ -89,7 +90,7 @@ abstract class CarryOut
      */
     protected function exec(array $params = []): array
     {
-        if (Connection::$instance->debug) {
+        if (DB::getDebugMode()) {
             $startTime = microtime(true);
             $startMemory = memory_get_usage();
         }
@@ -101,7 +102,7 @@ abstract class CarryOut
         if ($this->model->hasCache() && strlen($this->sql) < 60 && Cache::has($this->sql)) {
             $get = Cache::get($this->sql);
 
-            if (Connection::$instance->debug) {
+            if (DB::getDebugMode()) {
                 $endtime = microtime(true) - $startTime;
 
                 // End time
@@ -163,7 +164,7 @@ abstract class CarryOut
             }
         }
 
-        if (Connection::$instance->debug) {
+        if (DB::getDebugMode()) {
             $endtime = microtime(true) - $startTime;
 
             // End time

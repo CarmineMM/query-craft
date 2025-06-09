@@ -41,6 +41,34 @@ final class DB
     protected static bool $allow_bulk_delete = false;
 
     /**
+     * Debug mode
+     *
+     * @var boolean
+     */
+    protected static bool $debug = false;
+
+    /**
+     * Set debug mode
+     *
+     * @param boolean $set
+     * @return void
+     */
+    public static function debugMode(bool $set = true): void
+    {
+        self::$debug = $set;
+    }
+
+    /**
+     * Get debug mode
+     *
+     * @return boolean
+     */
+    public static function getDebugMode(): bool
+    {
+        return self::$debug;
+    }
+
+    /**
      * Set timezone based in PHP docs
      * 
      *  @see https://www.php.net/manual/en/timezones.php

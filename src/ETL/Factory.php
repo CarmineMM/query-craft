@@ -3,6 +3,7 @@
 namespace CarmineMM\QueryCraft\ETL;
 
 use CarmineMM\QueryCraft\Data\Model;
+use CarmineMM\QueryCraft\DB;
 use CarmineMM\QueryCraft\ETL\Transform;
 use CarmineMM\UnitsConversion\Conversion\DigitalUnitsConversion;
 use CarmineMM\UnitsConversion\Conversion\TimeConversion;
@@ -29,37 +30,37 @@ class Factory
     /**
      * Constructor
      *
-     * @param Model $fromModel
-     * @param Model $toModel
+     * @param Model $from
+     * @param Model $to
      */
     public function __construct(
-        public Model|string $fromModel,
-        public Model|string $toModel,
+        public Model|string $from,
+        public Model|string $to,
 
         public string $extractorReturnType = 'array',
         public int $splitIn = 10_000
     ) {
-        if (is_string($fromModel)) {
+        if (is_string($from)) {
             $instance = new Model();
-            $instance->setTable($fromModel);
-            $fromModel = $instance;
+            $instance->setTable($from);
+            $from = $instance;
         }
 
-        if (is_string($toModel)) {
+        if (is_string($to)) {
             $instance = new Model();
-            $instance->setTable($toModel);
-            $toModel = $instance;
+            $instance->setTable($to);
+            $to = $instance;
         }
 
-        $fromModel
+        $from
             ->setReturnType($this->extractorReturnType)
             ->setTimestamps(false);
 
-        $toModel
+        $to
             ->setReturnType($this->extractorReturnType)
             ->setTimestamps(false);
 
-        $this->extractor = new Extract($fromModel);
+        $this->extractor = new Extract($from);
 
         $this->extractor->setSplitIn($this->splitIn);
     }
@@ -81,12 +82,16 @@ class Factory
      *
      * @return void
      */
-    public function processEtl(): void
+    public function processEtl($debug = true): void
     {
-        echo "\nStart Process ETL";
-        $startTime = microtime(true);
-        $startMemory = memory_get_usage();
-        $dataInserted = 0;
+        $debug = $debug || DB::getDebugMode();
+
+        if ($debug) {
+            echo "\nStart Process ETL";
+            $startTime = microtime(true);
+            $startMemory = memory_get_usage();
+            $dataInserted = 0;
+        }
 
         while ($this->extractor->requiredMoreExtract) {
             //- Extract Data from the source
@@ -100,18 +105,22 @@ class Factory
             $transformed = (new Transform($data))->transform($this->extractAttributes);
 
             //- Insert de transformed data
-            $load = (new Load($this->toModel))->insert($transformed);
+            $load = (new Load($this->to))->insert($transformed);
 
-            $dataInserted += count($data);
+            if ($debug) {
+                $dataInserted += count($data);
+            }
         }
 
-        $endTime = microtime(true);
-        $endMemory = memory_get_usage();
+        if ($debug) {
+            $endTime = microtime(true);
+            $endMemory = memory_get_usage();
 
-        echo "\nEnd Process ETL";
-        echo "\n\nResumen:";
-        echo "\nTime: " . TimeConversion::fromSeconds($endTime - $startTime)->setSymbolMode('long')->smartConversion();
-        echo "\nMemory: " . DigitalUnitsConversion::fromBytes(($endMemory - $startMemory))->setSymbolMode('short')->smartConversion();
-        echo "\nData Inserted: {$dataInserted}";
+            echo "\nEnd Process ETL";
+            echo "\n\nResumen:";
+            echo "\nTime: " . TimeConversion::fromSeconds($endTime - $startTime)->setSymbolMode('long')->smartConversion();
+            echo "\nMemory: " . DigitalUnitsConversion::fromBytes(($endMemory - $startMemory))->setSymbolMode('short')->smartConversion();
+            echo "\nData Inserted: {$dataInserted}";
+        }
     }
 }

@@ -26,13 +26,6 @@ final class Connection
     private array $connections = [];
 
     /**
-     * Set Debug mode
-     *
-     * @var boolean
-     */
-    public bool $debug = false;
-
-    /**
      * Cache queries
      *
      * @var boolean
@@ -74,21 +67,6 @@ final class Connection
         }
 
         return static::$instance->connections;
-    }
-
-    /**
-     * Mode debug mode
-     *
-     * @param boolean $set
-     * @return void
-     */
-    public static function debugMode(bool $set = true): void
-    {
-        if (is_null(static::$instance)) {
-            static::$instance = new self;
-        }
-
-        static::$instance->debug = $set;
     }
 
     /**

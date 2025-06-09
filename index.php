@@ -24,8 +24,8 @@ Connection::connect('star_client_local', [
 ]);
 
 $etl = new Factory(
-    fromModel: (new Model('star_client'))->setTable('oitm'),
-    toModel: (new Model('star_client_local'))->setTable('products'),
+    from: (new Model('star_client'))->setTable('oitm'),
+    to: (new Model('star_client_local'))->setTable('products'),
     splitIn: 5_000
 );
 
