@@ -4,6 +4,7 @@ namespace CarmineMM\QueryCraft\Data;
 
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Contracts\Driver;
+use CarmineMM\QueryCraft\DB;
 use CarmineMM\QueryCraft\Mapper\Entity;
 use PDO;
 
@@ -67,12 +68,41 @@ abstract class BaseModel
     public bool $hasAutoIncrement = true;
 
     /**
+     * Allow to eliminate all elements
+     *
+     * @var boolean
+     */
+    public bool $allow_bulk_delete = false;
+
+    /**
      * Constructor of the base model
      */
     public function __construct()
     {
         $this->driver = Connection::pdo($this->connection, $this);
         $this->cache = Connection::$instance->cache;
+        $this->allow_bulk_delete = DB::isMassDeletionAllowed();
+    }
+
+    /**
+     * Access the driver that uses the model
+     *
+     * @return Driver
+     */
+    public function getDriver(): Driver
+    {
+        return $this->driver;
+    }
+
+    /**
+     * Allow to eliminate all elements
+     *
+     * @return static
+     */
+    public function allowBulkDelete(): static
+    {
+        $this->allow_bulk_delete = true;
+        return $this;
     }
 
     /**

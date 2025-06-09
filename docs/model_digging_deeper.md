@@ -1,3 +1,60 @@
 # Model Digging Deeper
 
 The models offer more advanced configurations for your extensible classes
+
+## Bulk Delete
+
+By default the models and the DB facade do not let delete massively, (make a delete without a where).
+You can modify this for a specific model, or for all models
+
+```php
+use CarmineMM\QueryCraft\DB;
+
+// For a specific model
+$model->allowBulkDelete();
+
+// For all models
+DB::allowBulkDelete();
+```
+
+> **Note:** It is up to you to be responsible for the use of this feature
+
+## Modifying the audit fields "\_at"
+
+The fields like _created_at_, _updated_at_, _deleted_at_ are used by default, but you can modify them
+
+```php
+use CarmineMM\QueryCraft\DB;
+
+// For a specific model
+$model->setCreatedAtField('created_at');
+$model->setUpdatedAtField('updated_at');
+$model->setDeletedAtField('deleted_at');
+```
+
+## Cache at execution time
+
+The models offer a cheese in execution time, which helps mitigate repeated consultations, which may return the same data.
+This data is stored in the session, so it is important to keep in mind that if the data is modified, the session must be deleted.
+However, we can **disable cache** for this model.
+
+```php
+// For a specific model
+$model->useCache(false);
+```
+
+You can also disable the cache for the current connection, so all models that use that connection will not have cache at execution time.
+
+```php
+Connection::disabledCache();
+```
+
+## Access the driver that uses the models
+
+The drivers will allow you to execute queries directly, or executions on the database directly
+
+```php
+$model->getDriver();
+```
+
+> **Note:** It is up to you to be responsible for the use of this feature

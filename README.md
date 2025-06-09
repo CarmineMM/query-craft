@@ -1,13 +1,31 @@
-# Query Craft ORM
+# Query Craft
+
+Query Craft is an ORM based on Data Mapper pattern, able to connect to **MySQL** and **Postgres**.
+A Extractor-Transformer-Loader (ETL) is also at your disposal.
+
+## Installation
+
+```bash
+composer require carminemm/query-craft
+```
+
+## Usage
 
 ```php
-use CarmineMM\QueryCraft\Connection as QueryCraftConnection;
+use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Data\Model;
 
-QueryCraftConnection::connect('star_client', [
+Connection::connect(config: [
     'driver' => 'mysql',
     'host' => '127.0.0.1',
     'username' => 'root',
     'password' => '',
-    'database' => 'star_client',
+    'database' => '',
+    'options' => [], // PDO options
 ]);
+
+$model = new Model('star_client');
+$model->setTable('products');
+
+$data = $model->all();
 ```

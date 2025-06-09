@@ -40,6 +40,14 @@ class UserModel extends Model
     // (Optional)
     // Primary key, by default it is 'id'
     protected string $primaryKey = 'id';
+
+    // (Optional)
+    // Enable timestamps (created_at and updated_at)
+    protected bool $timestamps = true;
+
+    // (Optional)
+    // Use soft deletes (deleted_at)
+    protected bool $softDeletes = false;
 }
 ```
 
@@ -92,7 +100,7 @@ class User extends Entity
     public DateTime|string|null $updated_at = null;
     public DateTime|string|null $deleted_at = null;
 
-    // (optional)
+    // (Optional)
     // Indicate the fields to be cast
     // By default the timestamps are married
     protected array $casts = [
@@ -100,7 +108,7 @@ class User extends Entity
     ];
 
     // (Optional)
-    // Puedes definir cualquier cantidad de métodos o propiedades adicionales
+    // You can define any number of additional methods or properties
     // ...
 }
 ```
