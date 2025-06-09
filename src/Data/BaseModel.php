@@ -86,6 +86,18 @@ abstract class BaseModel
     }
 
     /**
+     * Set primary key
+     *
+     * @param string $primaryKey
+     * @return static
+     */
+    public function setPrimaryKey(string $primaryKey): static
+    {
+        $this->primaryKey = $primaryKey;
+        return $this;
+    }
+
+    /**
      * Use cache in queries or this query
      *
      * @param boolean $useCache
@@ -180,5 +192,16 @@ abstract class BaseModel
     public function delete(): array
     {
         return $this->driver->delete();
+    }
+
+    /**
+     * Set fillable fields
+     *
+     * @return static
+     */
+    public function setFillable(array $fillable): static
+    {
+        $this->fillable = $fillable;
+        return $this;
     }
 }

@@ -47,7 +47,9 @@ class Model extends BaseModel
     {
         if ($this->table === '') {
             $table = explode('\\', get_called_class());
-            $this->table = strtolower(array_pop($table)) . 's';
+            $this->table = strtolower(
+                str_replace('Model', '', array_pop($table))
+            ) . 's';
         }
 
         $this->allow_bulk_delete = DB::isMassDeletionAllowed();
@@ -65,6 +67,18 @@ class Model extends BaseModel
     public function getHiddenFields(): array
     {
         return $this->hidden;
+    }
+
+    /**
+     * Set hidden fields
+     *
+     * @param array $hidden
+     * @return static
+     */
+    public function setHidden(array $hidden): static
+    {
+        $this->hidden = $hidden;
+        return $this;
     }
 
     /**

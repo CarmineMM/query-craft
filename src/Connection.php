@@ -53,7 +53,7 @@ final class Connection
      * @param array $config
      * @return void
      */
-    public static function connect(string $name, array $config): void
+    public static function connect(string $name = 'default', array $config = []): void
     {
         $connections = static::connections();
 
@@ -113,7 +113,7 @@ final class Connection
      * @return mixed
      */
     public static function pdo(
-        string $connection,
+        string $connection = 'default',
         Model $model = null,
     ): mixed {
         $connections = Connection::connections();
