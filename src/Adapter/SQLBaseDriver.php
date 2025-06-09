@@ -6,6 +6,7 @@ use CarmineMM\QueryCraft\Data\Model;
 use CarmineMM\QueryCraft\Data\CarryOut;
 use CarmineMM\QueryCraft\DB;
 use CarmineMM\QueryCraft\Mapper\Entity;
+use CarmineMM\QueryCraft\Mapper\Modeling;
 use CarmineMM\QueryCraft\Mapper\TempEntity;
 use DateTime;
 use DateTimeZone;
@@ -89,6 +90,32 @@ abstract class SQLBaseDriver extends CarryOut
                     : str_replace('{where}', "WHERE {$column} = '{$sentence}' {where}", $value);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * Where clause for the query
+     *
+     * @param string $column
+     * @return static
+     */
+    public function whereNotNull(string $column): static
+    {
+        $this->where($column, 'IS NOT', 'NULL');
+
+        return $this;
+    }
+
+    /**
+     * Where clause for the query
+     *
+     * @param string $column
+     * @return static
+     */
+    public function whereNull(string $column): static
+    {
+        $this->where($column, 'IS', 'NULL');
 
         return $this;
     }
@@ -193,55 +220,16 @@ abstract class SQLBaseDriver extends CarryOut
     public function creator(array|Entity $values, Model $model): static
     {
         $this->instance('insert');
-        $insertFields = $model->getFillable();
-        $prepareItems = [];
+        $values = $values instanceof Entity ? $values->toArray() : $values;
 
-        // Identificar si el modelo contiene un return type del tipo Entity
-        if (in_array($model->getReturnType(), ['array', 'object'])) {
-            $entity = new TempEntity($model);
-            $isEntity = !is_array($values);
+        $fillable_data = Modeling::fillableData($model, $values);
 
-            if ($isEntity) {
-                $newValues = [];
-                foreach ($model->getFillable() as $fillable) {
-                    $newValues[$fillable] = $values->{$fillable};
-                }
-                $prepareItems = $newValues;
-            } else {
-                $prepareItems = $values;
-            }
-        } else if (is_string($model->getReturnType())) {
-            $entityName = $model->getReturnType();
-            $entity = new $entityName($values, $model);
-        }
-
-
-        // Valores para el entity
-        $values = $entity->setAttributes($prepareItems)
-            ->getSetterCasts()
-            ->getAttributes();
-
-        // Verificar si se tienen que insertar fields
-        if ($this->model->hasTimestamps()) {
-            $date = (new DateTime())
-                ->setTimezone(new DateTimeZone(DB::getTimezone()))
-                ->format('Y-m-d H:i:s');
-
-            if ($createdField = $this->model->getCreatedAtField()) {
-                $values[$createdField] = $date;
-                $insertFields[] = $createdField;
-            }
-
-            if ($updatedField = $this->model->getUpdatedAtField()) {
-                $values[$updatedField] = $date;
-                $insertFields[] = $updatedField;
-            }
-        }
+        ['values' => $insertValues] = Modeling::applyTimeStamps($model, $fillable_data);
 
         $placeholder = [];
         $keys = [];
 
-        foreach ($values as $key => $value) {
+        foreach ($insertValues as $key => $value) {
             $keys[] = $key;
             $placeholder[] = ':' . $key;
             $this->data[$key] = Sanitizer::string($value);
@@ -257,7 +245,7 @@ abstract class SQLBaseDriver extends CarryOut
     }
 
     /**
-     * Inserta datos a gran escala, no realiza mappers ni timestamps
+     * Insert large -scale data, do not make mappers or timestamp
      *
      * @param array $data
      * @return array

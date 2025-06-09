@@ -21,6 +21,10 @@ interface Driver
 
     public function orWhere(string $column, string $sentence, string $three = ''): static;
 
+    public function whereNotNull(string $column): static;
+
+    public function whereNull(string $column): static;
+
     public function toSql(string $sentence = 'select'): string;
 
     public function get(array $columns = ['*']): array;

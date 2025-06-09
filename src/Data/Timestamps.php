@@ -70,6 +70,27 @@ trait Timestamps
     }
 
     /**
+     * Get the soft deleted at field
+     *
+     * @return null|string
+     */
+    public function getSoftDeletedAtField(): null|string
+    {
+        return $this->softDeletes ? $this->deleted_field : null;
+    }
+
+    /**
+     * Indica si se hace uso de soft deletes
+     *
+     * @return boolean
+     */
+    public function setSoftDeletes(bool $softDeletes): static
+    {
+        $this->softDeletes = $softDeletes;
+        return $this;
+    }
+
+    /**
      * Set the created at field
      *
      * @param string $field

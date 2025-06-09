@@ -59,6 +59,10 @@ abstract class CarryOut
      */
     protected function prepareSql(): static
     {
+        if ($this->model->getSoftDeletedAtField() !== null) {
+            $this->model->getDriver()->whereNotNull($this->model->getSoftDeletedAtField());
+        }
+
         $columns = implode(', ', $this->columns);
         $this->sql = str_replace('{column}', $columns, $this->sql);
         $this->sql = trim(

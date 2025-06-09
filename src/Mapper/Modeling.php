@@ -3,9 +3,12 @@
 namespace CarmineMM\QueryCraft\Mapper;
 
 use CarmineMM\QueryCraft\Data\Model;
+use CarmineMM\QueryCraft\DB;
+use DateTime;
+use DateTimeZone;
 
 /**
- * Modelar la data, antes de ejecutar transacciones sobre la base de datos.
+ * Model the data, before executing transactions on the database.
  * 
  * @package CarmineMM\QueryCraft
  * @author Carmine Maggio <carminemaggiom@gmail.com>
@@ -14,10 +17,57 @@ use CarmineMM\QueryCraft\Data\Model;
  */
 class Modeling
 {
-    public static function fillableData(Model $model, array|Entity $values): array
+    /**
+     * Get de data fillable
+     *
+     * @param Model $model
+     * @param array $values
+     * @return array
+     */
+    public static function fillableData(Model $model, array $values): array
     {
-        $values = $values instanceof Entity ? $values->toArray() : $values;
+        $fillableData = [];
 
-        return $values;
+        foreach ($model->getFillable() as $fillable) {
+            if (isset($values[$fillable])) {
+                $fillableData[$fillable] = $values[$fillable];
+            }
+        }
+
+        return $fillableData;
+    }
+
+    /**
+     * Apply timestamps to the data
+     *
+     * @param Model $model
+     * @param array $values
+     * @return array
+     */
+    public static function applyTimeStamps(Model $model, array $values): array
+    {
+        $insertFields = [];
+
+        // Verificar si se tienen que insertar fields
+        if ($model->hasTimestamps()) {
+            $date = (new DateTime())
+                ->setTimezone(new DateTimeZone(DB::getTimezone()))
+                ->format('Y-m-d H:i:s');
+
+            if ($createdField = $model->getCreatedAtField()) {
+                $values[$createdField] = $date;
+                $insertFields[] = $createdField;
+            }
+
+            if ($updatedField = $model->getUpdatedAtField()) {
+                $values[$updatedField] = $date;
+                $insertFields[] = $updatedField;
+            }
+        }
+
+        return [
+            'values' => $values,
+            'insertFields' => $insertFields,
+        ];
     }
 }

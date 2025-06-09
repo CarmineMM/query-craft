@@ -144,6 +144,30 @@ class Model extends BaseModel
     }
 
     /**
+     * Where clause for the query
+     *
+     * @param string $column
+     * @return static
+     */
+    public function whereNotNull(string $column): static
+    {
+        $this->driver->whereNotNull(Sanitizer::string($column));
+        return $this;
+    }
+
+    /**
+     * Where clause for the query
+     *
+     * @param string $column
+     * @return static
+     */
+    public function whereNull(string $column): static
+    {
+        $this->driver->whereNull(Sanitizer::string($column));
+        return $this;
+    }
+
+    /**
      * View the SQL query
      *
      * @return string

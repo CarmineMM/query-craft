@@ -31,6 +31,14 @@ Will obtain the first record that complies with the sentence
 $data = $model->where('name', 'John')->first();
 ```
 
+### Null and not null
+
+```php
+$data = $model->whereNull('name')->all();
+
+$data = $model->whereNotNull('name')->all();
+```
+
 ### Limiting the amount of records
 
 ```php
