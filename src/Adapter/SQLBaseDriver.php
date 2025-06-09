@@ -43,7 +43,8 @@ abstract class SQLBaseDriver extends CarryOut
     }
 
     /**
-     * Where clause for the query
+     * Where clause for the query.
+     * TODO: Extender el Where para soportar más tipos de sentencias
      *
      * @param string $column
      * @param string $sentence
@@ -84,8 +85,8 @@ abstract class SQLBaseDriver extends CarryOut
                     : str_replace('{where}', "OR {$column} = '{$sentence}' {where}", $value);
             } else {
                 $this->layout[$key] = $three
-                    ? str_replace('{where}', "OR WHERE {$column} {$sentence} {$three} {where}", $value)
-                    : str_replace('{where}', "OR WHERE {$column} = '{$sentence}' {where}", $value);
+                    ? str_replace('{where}', "WHERE {$column} {$sentence} {$three} {where}", $value)
+                    : str_replace('{where}', "WHERE {$column} = '{$sentence}' {where}", $value);
             }
         }
 

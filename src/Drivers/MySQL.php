@@ -17,24 +17,17 @@ use CarmineMM\QueryCraft\Data\Model;
 final class MySQL extends SQLBaseDriver implements Driver
 {
     /**
-     * Instance of the MySQL driver
-     *
-     * @var MySQL|null
-     */
-    public static ?MySQL $instance = null;
-
-    /**
-     * Constructor of the PostgresSQL driver
+     * Constructor of the MySQL driver
      */
     public function __construct(
         /**
-         * Configuration of the PostgresSQL driver
+         * Configuration of the MySQL driver
          *
          * @var array
          */
         array $config,
         /**
-         * Model of the PostgresSQL driver
+         * Model of the MySQL driver
          *
          * @var Model
          */
@@ -48,7 +41,7 @@ final class MySQL extends SQLBaseDriver implements Driver
             dsn: "mysql:host={$config['host']};port={$port};dbname={$config['database']}",
             username: $config['username'],
             password: $config['password'],
-            options: $config['options'] ?? []
+            options: $config['options'] ?? null
         );
     }
 }

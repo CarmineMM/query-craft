@@ -37,7 +37,7 @@ final class PostgresSQL extends SQLBaseDriver implements Driver
                 dsn: "pgsql:host={$config['host']};port={$port};dbname={$config['database']}",
                 username: $config['username'],
                 password: $config['password'],
-                options: $config['options'] ?? []
+                options: $config['options'] ?? null
             ),
             active: Connection::$instance->cache
         );
