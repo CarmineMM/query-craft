@@ -118,7 +118,6 @@ class Model extends BaseModel
     public function where(string $column, string $sentence, string $three = ''): static
     {
         $column = Sanitizer::string($column);
-        $sentence = Sanitizer::string($sentence);
         $three = Sanitizer::string($three);
 
         $this->driver->where($column, $sentence, $three);
@@ -136,7 +135,6 @@ class Model extends BaseModel
     public function orWhere(string $column, string $sentence, string $three = ''): static
     {
         $column = Sanitizer::string($column);
-        $sentence = Sanitizer::string($sentence);
         $three = Sanitizer::string($three);
 
         $this->driver->orWhere($column, $sentence, $three);

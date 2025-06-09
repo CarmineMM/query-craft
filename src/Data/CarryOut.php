@@ -45,6 +45,13 @@ abstract class CarryOut
     ];
 
     /**
+     * Snapshot of the layouts
+     *
+     * @var array
+     */
+    protected array $layout_snapshot = [];
+
+    /**
      * Conexión por PDO
      *
      * @var \PDO
