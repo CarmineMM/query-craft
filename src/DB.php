@@ -10,7 +10,7 @@ use CarmineMM\QueryCraft\Contracts\Driver;
  * @package CarmineMM\QueryCraft
  * @author Carmine Maggio <carminemaggiom@gmail.com>
  * @license MIT
- * @version 1.0.0
+ * @version 1.2.0
  */
 final class DB
 {

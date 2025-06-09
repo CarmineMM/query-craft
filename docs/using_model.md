@@ -64,4 +64,8 @@ $data = $model->create(new Entity([
 ]));
 ```
 
-## Updating elements
+## Deleting elements
+
+```php
+$data = $model->delete();
+```

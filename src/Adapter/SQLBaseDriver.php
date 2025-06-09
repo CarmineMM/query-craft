@@ -197,8 +197,8 @@ abstract class SQLBaseDriver extends CarryOut
         $prepareItems = [];
 
         // Identificar si el modelo contiene un return type del tipo Entity
-        if (is_string($model->getReturnType())) {
-            $tempEntity = new TempEntity($model);
+        if (in_array($model->getReturnType(), ['array', 'object'])) {
+            $entity = new TempEntity($model);
             $isEntity = !is_array($values);
 
             if ($isEntity) {
@@ -210,16 +210,16 @@ abstract class SQLBaseDriver extends CarryOut
             } else {
                 $prepareItems = $values;
             }
-
-            $values = $tempEntity->setCasts(
-                $isEntity
-                    ? $values->getCasts()
-                    : $tempEntity->getCasts()
-            )
-                ->setAttributes($prepareItems)
-                ->getSetterCasts()
-                ->getAttributes();
+        } else if (is_string($model->getReturnType())) {
+            $entityName = $model->getReturnType();
+            $entity = new $entityName($values, $model);
         }
+
+
+        // Valores para el entity
+        $values = $entity->setAttributes($prepareItems)
+            ->getSetterCasts()
+            ->getAttributes();
 
         // Verificar si se tienen que insertar fields
         if ($this->model->hasTimestamps()) {
@@ -335,9 +335,11 @@ abstract class SQLBaseDriver extends CarryOut
      * @param array $data
      * @return array
      */
-    public function updatable(array $data = []): array
+    public function update(array|Entity $values, Model $model): array
     {
-        $this->instance('insert');
+        $this->instance('update');
+
+
 
         return $this->data;
     }

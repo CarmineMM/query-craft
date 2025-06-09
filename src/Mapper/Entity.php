@@ -18,6 +18,13 @@ class Entity
     public string|Model $model;
 
     /**
+     * Attributes of the entity
+     *
+     * @var array
+     */
+    private array $attributes;
+
+    /**
      * Constructor of the entity
      */
     public function __construct(
@@ -50,6 +57,8 @@ class Entity
         }
 
         $this->setAttributes($attributes, $loadWith);
+
+        $this->attributes = $attributes;
     }
 
     /**
@@ -77,9 +86,26 @@ class Entity
                 $this->$key = $value;
             }
         }
+        $this->attributes = $attributes;
 
         // Cargar los timestamps casts
         $this->__loadTimestamps($director);
+    }
+
+    /**
+     * Convert the entity to an array
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $attributes = [];
+
+        foreach ($this->attributes as $key) {
+            $attributes[$key] = $this->$key;
+        }
+
+        return $attributes;
     }
 
     /**
@@ -91,16 +117,19 @@ class Entity
     {
         $createdAtField = $this->model->getCreatedAtField();
         if ($createdAtField  && isset($this->$createdAtField)) {
+            $this->attributes[] = $this->$createdAtField;
             $this->$createdAtField = $casts->getter($this->$createdAtField, $this->model, 'datetime');
         }
 
         $updatedAtField = $this->model->getUpdatedAtField();
         if ($updatedAtField && isset($this->$updatedAtField)) {
+            $this->attributes[] = $this->$updatedAtField;
             $this->$updatedAtField = $casts->getter($this->$updatedAtField, $this->model, 'datetime');
         }
 
         $deletedAtField = $this->model->getDeletedAtField();
         if ($deletedAtField && isset($this->$deletedAtField)) {
+            $this->attributes[] = $this->$deletedAtField;
             $this->$deletedAtField = $casts->getter($this->$deletedAtField, $this->model, 'datetime');
         }
     }
