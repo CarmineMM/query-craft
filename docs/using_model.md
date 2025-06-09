@@ -51,6 +51,12 @@ $data = $model->limit(10)->all();
 $data = $model->limit(limit: 10, offset: 20)->all();
 ```
 
+### Count elements
+
+```php
+$data = $model->count();
+```
+
 ## Creating elements
 
 Simple creation using an arrangement

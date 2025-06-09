@@ -44,4 +44,6 @@ interface Driver
     public function create(array|Entity $values, Model $model): array;
 
     public function reset(): static;
+
+    public function count(string $column = '*'): int;
 }

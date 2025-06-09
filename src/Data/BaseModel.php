@@ -34,7 +34,6 @@ abstract class BaseModel
     /**
      * PDO Connection
      *
-     * @method array get(array $columns = ['*'])
      * @var Driver
      */
     protected Driver $driver;

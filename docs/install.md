@@ -58,13 +58,12 @@ use CarmineMM\QueryCraft\Connection;
 Connection::connect(
     name: 'config-1',
     config: [
-        'driver' => 'mysql',
+        'driver' => 'sqlsrv',
         'host' => '127.0.0.1',
         'username' => 'root',
         'password' => '',
         'database' => '',
-        'schema' => 'schema',
-        'options' => [], // PDO options
+        'schema' => 'dbo', // <-- Schema
     ]
 );
 ```

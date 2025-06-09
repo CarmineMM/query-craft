@@ -4,15 +4,18 @@ namespace CarmineMM\QueryCraft\Adapter;
 
 use CarmineMM\QueryCraft\Data\Model;
 use CarmineMM\QueryCraft\Data\CarryOut;
-use CarmineMM\QueryCraft\DB;
 use CarmineMM\QueryCraft\Mapper\Entity;
 use CarmineMM\QueryCraft\Mapper\Modeling;
-use CarmineMM\QueryCraft\Mapper\TempEntity;
-use DateTime;
-use DateTimeZone;
 use Exception;
 use InvalidArgumentException;
 
+/**
+ * Drivers base para casi todas las bases de datos basadas en SQL
+ *
+ * @package CarmineMM\QueryCraft
+ * @author Carmine Maggio <carminemaggiom@gmail.com>
+ * @version 1.5.0
+ */
 abstract class SQLBaseDriver extends CarryOut
 {
     /**
@@ -23,6 +26,10 @@ abstract class SQLBaseDriver extends CarryOut
      */
     protected function instance(string $type = ''): static
     {
+        if ($this->model->getTable() === '') {
+            throw new Exception("Table name is required!", 500);
+        }
+
         if ($this->sql === '') {
             $table = $this->model->getSchema()
                 ? "{$this->model->getSchema()}.{$this->model->getTable()}"
@@ -212,6 +219,21 @@ abstract class SQLBaseDriver extends CarryOut
             ->instance('select')
             ->limit(1)
             ->exec()[0] ?? null;
+    }
+
+    /**
+     * Countable elements
+     *
+     * @param string $column
+     * @return int
+     */
+    public function count(string $column = '*'): int
+    {
+        $this->instance('select');
+
+        $this->sql = str_replace('{column}', "COUNT({$column})", $this->sql);
+
+        return (int) reset($this->exec()[0]);
     }
 
     /**

@@ -6,6 +6,7 @@ use CarmineMM\QueryCraft\Contracts\Driver;
 use CarmineMM\QueryCraft\Data\Model;
 use CarmineMM\QueryCraft\Drivers\MySQL;
 use CarmineMM\QueryCraft\Drivers\PostgresSQL;
+use CarmineMM\QueryCraft\Drivers\SQLServer;
 use PDO;
 
 /**
@@ -111,6 +112,7 @@ final class Connection
             $connection = match ($config['driver']) {
                 'pgsql' => new PostgresSQL($config, $model),
                 'mysql', 'mariadb' => new MySQL($config, $model),
+                'sqlsrv' => new SQLServer($config, $model),
                 default => throw new \Exception('Driver not found', 500),
             };
         }

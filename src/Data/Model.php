@@ -280,4 +280,15 @@ class Model extends BaseModel
     {
         return $this->driver->insert($data);
     }
+
+    /**
+     * Countable elements
+     *
+     * @param string $column
+     * @return int
+     */
+    public function count(string $column = '*'): int
+    {
+        return $this->driver->count($column);
+    }
 }

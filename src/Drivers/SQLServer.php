@@ -7,6 +7,7 @@ use CarmineMM\QueryCraft\Cache;
 use CarmineMM\QueryCraft\Connection;
 use CarmineMM\QueryCraft\Contracts\Driver;
 use CarmineMM\QueryCraft\Data\Model;
+use Exception;
 
 final class SQLServer extends SQLBaseDriver implements Driver
 {
@@ -39,7 +40,7 @@ final class SQLServer extends SQLBaseDriver implements Driver
         $this->pdo = Cache::remember(
             key: "{$config['host']}:{$port}-{$config['database']}-{$config['username']}",
             value: new \PDO(
-                dsn: "sqlsrv:host={$config['host']};port={$port};dbname={$config['database']}",
+                dsn: "sqlsrv:Server={$config['host']},{$port};Database={$config['database']}",
                 username: $config['username'],
                 password: $config['password'],
                 options: $config['options'] ?? null
@@ -56,9 +57,13 @@ final class SQLServer extends SQLBaseDriver implements Driver
      */
     protected function instance(string $type = ''): static
     {
+        if ($this->model->getTable() === '') {
+            throw new Exception("Table name is required!", 500);
+        }
+
         if ($this->sql === '') {
             $table = $this->model->getSchema()
-                ? "[{$this->model->getSchema()}].[$this->model->getTable()]"
+                ? "[{$this->model->getSchema()}].[{$this->model->getTable()}]"
                 : "[$this->model->getTable()]";
 
             $this->sql = str_replace('{table}', $table, $this->layout[$type]);
