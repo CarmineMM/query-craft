@@ -38,7 +38,7 @@ class Factory
         public Model|string $to,
 
         public string $extractorReturnType = 'array',
-        public int $splitIn = 10_000
+        public int $chunkSize = 10_000
     ) {
         if (is_string($from)) {
             $instance = new Model();
@@ -62,7 +62,7 @@ class Factory
 
         $this->extractor = new Extract($from);
 
-        $this->extractor->setSplitIn($this->splitIn);
+        $this->extractor->setSplitIn($this->chunkSize);
     }
 
     /**

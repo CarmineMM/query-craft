@@ -80,3 +80,22 @@ $etl->extractAttributes([
 ```php
 $etl->processEtl(true); // Force the debug mode
 ```
+
+## Considerations
+
+### ETL process with functions
+
+The extraction and transformation process using functions can deteriorate the optimization, better avoid them in the possible.
+
+### A lot of SQL load
+
+Sometimes the amount of data inserted exceeds the allowed amount of the SQL.In this case, you can use the `chunkSize` parameter to limit the number of records inserted in each iteration.
+
+```php
+$etl = new Factory(
+    from: (new Model('primary_connection'))->setTable('users_from_table'),
+    to: (new Model('secondary_connection'))->setTable('destiny_table'),
+
+    chunkSize: 4_000 // <-- Get the elements in batches of 4000
+);
+```
