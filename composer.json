@@ -16,7 +16,7 @@
     ],
     "require": {
         "php": "^8.3",
-        "carminemm/units-conversion": "^1.2"
+        "carminemm/units-conversion": "^1.2.1"
     },
     "minimum-stability": "dev",
     "prefer-stable": true

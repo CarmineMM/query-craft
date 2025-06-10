@@ -70,4 +70,32 @@ class Modeling
             'insertFields' => $insertFields,
         ];
     }
+
+    /**
+     * Updated at
+     *
+     * @param Model $model
+     * @param array $values
+     * @return array
+     */
+    public static function applyUpdatedAt(Model $model, array $values): array
+    {
+        $insertFields = [];
+
+        if ($model->hasTimestamps() && $model->getUpdatedAtField()) {
+            $date = (new DateTime())
+                ->setTimezone(new DateTimeZone(DB::getTimezone()))
+                ->format('Y-m-d H:i:s');
+
+            $updatedField = $model->getUpdatedAtField();
+
+            $values[$updatedField] = $date;
+            $insertFields[] = $updatedField;
+        }
+
+        return [
+            'values' => $values,
+            'insertFields' => $insertFields,
+        ];
+    }
 }

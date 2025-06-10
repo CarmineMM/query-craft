@@ -74,6 +74,13 @@ abstract class BaseModel
     public bool $allow_bulk_delete = false;
 
     /**
+     * Allow to update all elements
+     *
+     * @var boolean
+     */
+    public bool $allow_bulk_update = false;
+
+    /**
      * Schema de la base de datos
      *
      * @var string

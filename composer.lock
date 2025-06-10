@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "88e14647423eacdeda2376026b85e78b",
+    "content-hash": "2f06c6693ba2c8a7799d30bba8d4274c",
     "packages": [
         {
             "name": "ausi/slug-generator",
@@ -77,16 +77,16 @@
         },
         {
             "name": "carminemm/units-conversion",
-            "version": "1.2.0",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/CarmineMM/units-conversion.git",
-                "reference": "847a5c84152eaac9ac70efa660c1a159771b7973"
+                "reference": "afd226b3b843ac75f1debf82a8dc4cc3a134a390"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CarmineMM/units-conversion/zipball/847a5c84152eaac9ac70efa660c1a159771b7973",
-                "reference": "847a5c84152eaac9ac70efa660c1a159771b7973",
+                "url": "https://api.github.com/repos/CarmineMM/units-conversion/zipball/afd226b3b843ac75f1debf82a8dc4cc3a134a390",
+                "reference": "afd226b3b843ac75f1debf82a8dc4cc3a134a390",
                 "shasum": ""
             },
             "require": {
@@ -112,9 +112,9 @@
             "description": "Convert digital units, temperature, weight and large numbers at a glance",
             "support": {
                 "issues": "https://github.com/CarmineMM/units-conversion/issues",
-                "source": "https://github.com/CarmineMM/units-conversion/tree/1.2.0"
+                "source": "https://github.com/CarmineMM/units-conversion/tree/v1.2.1"
             },
-            "time": "2025-04-02T15:50:22+00:00"
+            "time": "2025-06-09T23:15:19+00:00"
         }
     ],
     "packages-dev": [],
