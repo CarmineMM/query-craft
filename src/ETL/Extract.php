@@ -11,13 +11,6 @@ use CarmineMM\QueryCraft\Data\Model;
 class Extract
 {
     /**
-     * Indica cual es el limite de rows por split
-     *
-     * @var integer
-     */
-    private int $splitIn = 10_000;
-
-    /**
      * Offset
      *
      * @var integer
@@ -43,10 +36,9 @@ class Extract
      */
     public function __construct(
         protected Model $model,
-        int $splitIn = 1000,
+        protected int $splitIn = 20_000,
         array $extractAttributes = ['*']
     ) {
-        $this->splitIn = $splitIn;
         $this->extractAttributes = $extractAttributes;
         $this->model->takeSnapshot('etl_base_query');
     }

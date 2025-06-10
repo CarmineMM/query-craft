@@ -38,7 +38,7 @@ class Factory
         public Model|string $to,
 
         public string $extractorReturnType = 'array',
-        public int $chunkSize = 10_000
+        public int $chunkSize = 18_000
     ) {
         if (is_string($from)) {
             $instance = new Model();
@@ -60,9 +60,7 @@ class Factory
             ->setReturnType($this->extractorReturnType)
             ->setTimestamps(false);
 
-        $this->extractor = new Extract($from);
-
-        $this->extractor->setSplitIn($this->chunkSize);
+        $this->extractor = new Extract($from, $this->chunkSize);
     }
 
     /**
@@ -82,12 +80,12 @@ class Factory
      *
      * @return void
      */
-    public function processEtl($debug = true): void
+    public function processEtl($debug = true, $debugQueries = false): void
     {
         $debug = $debug || DB::getDebugMode();
 
         if ($debug) {
-            DB::debugMode(true);
+            DB::debugMode($debugQueries);
             echo "\nStart Process ETL";
             $startTime = microtime(true);
             $startMemory = memory_get_usage();
@@ -124,7 +122,7 @@ class Factory
             echo "\nTime: " . TimeConversion::fromSeconds($endTime - $startTime)->setSymbolMode('long')->smartConversion();
             echo "\nMemory: " . DigitalUnitsConversion::fromBytes(($endMemory - $startMemory))->setSymbolMode('short')->smartConversion();
             echo "\nData Inserted: {$dataInserted}";
-            DB::debugMode(false);
+            DB::debugMode($debugQueries);
         }
     }
 }
