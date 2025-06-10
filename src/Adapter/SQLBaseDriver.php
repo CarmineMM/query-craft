@@ -21,10 +21,49 @@ abstract class SQLBaseDriver extends CarryOut
     /**
      * SQL functions that must be ignored in the AddQuotes
      * And not locate in quotes.
+     * 
+     * Common functions across MySQL, PostgreSQL and SQL Server
      *
      * @var array
      */
-    public static $selectFunction = ["COUNT(", "SUM(", "AVG(", "MAX(", "MIN(", "TOP("];
+    public static $selectFunction = [
+        // Aggregate functions
+        'COUNT(', 'SUM(', 'AVG(', 'MAX(', 'MIN(', 'GROUP_CONCAT(', 'STRING_AGG(',
+        'ARRAY_AGG(', 'JSON_AGG(', 'JSON_OBJECT_AGG(', 'JSON_ARRAYAGG(',
+        
+        // String functions
+        'CONCAT(', 'CONCAT_WS(', 'SUBSTRING(', 'SUBSTR(', 'LEFT(', 'RIGHT(', 
+        'LENGTH(', 'CHAR_LENGTH(', 'LOWER(', 'UPPER(', 'TRIM(', 'LTRIM(', 
+        'RTRIM(', 'REPLACE(', 'REVERSE(', 'REPEAT(', 'SPACE(', 'FORMAT(',
+        
+        // Date/Time functions
+        'NOW(', 'CURDATE(', 'CURTIME(', 'DATE_ADD(', 'DATE_SUB(', 'DATEDIFF(',
+        'DATE_FORMAT(', 'DAY(', 'MONTH(', 'YEAR(', 'HOUR(', 'MINUTE(', 'SECOND(',
+        'EXTRACT(', 'DATE_PART(', 'TO_CHAR(', 'TO_DATE(', 'TO_TIMESTAMP(',
+        
+        // Conditional functions
+        'COALESCE(', 'NULLIF(', 'IFNULL(', 'ISNULL(', 'NVL(', 'CASE ', 'IIF(',
+        
+        // Window functions
+        'ROW_NUMBER(', 'RANK(', 'DENSE_RANK(', 'NTILE(', 'LEAD(', 'LAG(',
+        'FIRST_VALUE(', 'LAST_VALUE(', 'PERCENT_RANK(', 'CUME_DIST(',
+        
+        // Math functions
+        'ABS(', 'ROUND(', 'CEIL(', 'FLOOR(', 'POWER(', 'SQRT(', 'MOD(', 'RAND(',
+        
+        // Type conversion
+        'CAST(', 'CONVERT(', 'TRY_CAST(', 'TRY_CONVERT(',
+        
+        // JSON functions (common)
+        'JSON_VALUE(', 'JSON_QUERY(', 'JSON_EXTRACT(', 'JSON_CONTAINS(',
+        
+        // Other common functions
+        'COALESCE(', 'NULLIF(', 'IFNULL(', 'ISNULL(', 'NVL(', 'GREATEST(', 'LEAST(',
+        'INSTR(', 'POSITION(', 'LOCATE(', 'CHARINDEX(', 'PATINDEX(', 'SOUNDEX(',
+        'DIFFERENCE(', 'REPLICATE(', 'STUFF(', 'TRANSLATE(', 'ASCII(', 'CHR(',
+        'UNICODE(', 'NCHAR(', 'REPLICATE(', 'SPACE(', 'STR(', 'QUOTENAME(',
+        'PARSENAME(', 'ISDATE(', 'ISNUMERIC(', 'ISJSON(', 'TRY_PARSE(', 'TRY_CONVERT(' 
+    ];
 
     /**
      * Prepares the SQL query by compiling all its parts.
