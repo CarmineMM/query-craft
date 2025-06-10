@@ -1,53 +1,78 @@
 # Models and entities
 
-Create your models to have direct connections to the database.
-Generate entities to have control over the code and the entity obtained from the database.
+To interact with your database, QueryCraft uses two key concepts: ** models ** and ** entities **.Understanding its difference is essential to use the ORM effectively.
+
+-   **Model (`Model`)**: It is your gateway to a specific table of the database.It is responsible for building and executing consultations (Select, Insert, Update, Delete).Think about him as the **consultation builder**.
+-   **Entity (`entity`)**: It is an object -oriented representation of a **single row** of your table.It contains the properties that correspond to the columns and allows you to handle the data in a structured way, including type transformation (casting).
 
 ## Recommended model creation
 
-You can omit certain configurations, below are the most useful and that you can use in your daily models.
+The model contains the configuration to connect to the correct table and define its behavior.
 
 ```php
 use CarmineMM\QueryCraft\Data\Model;
+use App\Entities\UserEntity; // Be sure to import your entity
 
 class UserModel extends Model
 {
-    // (Optional)
-    // By default the name of the table is determined automatically,
-    // Based on the name of the model (The 'Model' is omitted in his name), in lowercase and adding an 's' at the end.
-    // In this case you will look for the 'users' table, but you can customize the name of the table below
-    protected string $table = '';
+    /**
+     * (Optional) Table name.
+     * By default, it is deduced from the name of the class (UserModel -> users).
+     * You can specify it manually if you do not follow the convention.
+     */
+    protected string $table = 'users';
 
-    // (Optional)
-    // Hidden fields brought from the database
-    // These will not map, they will not be executed in the Mapper of the entity.
-    protected array $hidden = [];
-
-    // (Obligatorio)
-    // Fields that can be filled in the database
-    protected array $fillable = [];
-
-    // (Optional)
-    // Connection name, by default it is 'default'
+    /**
+     * (Optional) Database connection to use.
+     * Uses the 'default' connection if not specified.
+     */
     protected string $connection = 'default';
 
-    // (Optional, recommended to use entity)
-    // Indicates the return value that SQL queries have
-    // You can also indicate the Mapper to make insertions in the database
-    // Valores posibles: object | array | Entity::class
-    protected string $returnType = 'array';
+    /**
+     * (Required) Fields that can be mass assigned.
+     * For security, only the fields listed here will be inserted or updated
+     * when using methods like `create()` or `update()`.
+     */
+    protected array $fillable = [
+        'name',
+        'email',
+        'password',
+        'address',
+        'birthdate',
+    ];
 
-    // (Optional)
-    // Primary key, by default it is 'id'
+    /**
+     * (Optional) Fields that will be hidden when converting the result to array or JSON.
+     * Useful for sensitive information like passwords.
+     */
+    protected array $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * (Optional, recommended) Define the type of data that the queries will return.
+     * Can be 'array', 'object' or the name of an Entity class.
+     * Using an Entity is the recommended practice.
+     */
+    protected string $returnType = UserEntity::class;
+
+    /**
+     * (Optional) Primary key of the table. By default it is 'id'.
+     */
     protected string $primaryKey = 'id';
 
-    // (Optional)
-    // Enable timestamps (created_at and updated_at)
+    /**
+     * (Optional) Enables automatic management of the
+     * `created_at` and `updated_at` fields. By default it is `true`.
+     */
     protected bool $timestamps = true;
 
-    // (Optional)
-    // Use soft deletes (deleted_at)
-    protected bool $softDeletes = false;
+    /**
+     * (Optional) Enables soft deletes.
+     * Requires a `deleted_at` column in the table. By default it is `false`.
+     */
+    protected bool $softDeletes = true;
 }
 ```
 
@@ -61,56 +86,53 @@ This can be used to make casts on the data obtained from the database.
 If you will use entities, you must configure your model to use them.
 
 ```php
-use CarmineMM\QueryCraft\Data\Model;
+    use CarmineMM\QueryCraft\Data\Model;
 
-class UserModel extends Model
-{
-    protected string $returnType = Entity::class;
-}
+    class UserModel extends Model
+    {
+        protected string $returnType = Entity::class;
+    }
 ```
 
-Now we can configure the entity that the model will use.
+    Now we can configure the entity that the model will use.
 
 ```php
-use CarmineMM\QueryCraft\Data\Entity;
+    use CarmineMM\QueryCraft\Data\Entity;
+    use DateTime;
 
-class User extends Entity
-{
-    // (Mandatory)
-    // Use it for retrospective mapping, points to the model associated with the
-    public string|Model $model = UserModel::class;
+    class UserEntity extends Entity
+    {
+        /**
+         * (Obligatorio) Propiedades de la entidad.
+         * Deben coincidir con las columnas de tu tabla.
+         * Usa tipos de PHP para definir cómo se manejarán los datos.
+         */
+        public int $id;
+        public ?string $name;
+        public string $email;
+        public ?string $email_verified_at;
+        public ?string $password;
+        public ?string $address;
+        public ?DateTime $birthdate; // Se convertirá a DateTime gracias al cast
+        public ?string $remember_token;
+        public ?string $profile_photo_path;
 
-    // (Mandatory)
-    // Then define the fields of the entity
-    // These should agree with the fields of the database
-    public int $id;
-    public ?string $name;
-    public string $email;
-    public ?string $email_verified_at;
-    public ?string $password;
-    public string $address;
-    public DateTime $birthdate;
-    public ?string $remember_token;
-    public ?string $profile_photo_path;
+        // Timestamps gestionados por el modelo.
+        // Se castean a DateTime automáticamente si $timestamps está habilitado.
+        public ?DateTime $created_at;
+        public ?DateTime $updated_at;
+        public ?DateTime $deleted_at;
 
-    // if your model Uses Timestamps, You Can defines Them Here
-    // Your default database can have them in Null, they can also come as a string
-    // But they finally transform into Datetime
-    public DateTime|string|null $created_at = null;
-    public DateTime|string|null $updated_at = null;
-    public DateTime|string|null $deleted_at = null;
-
-    // (Optional)
-    // Indicate the fields to be cast
-    // By default the timestamps are married
-    protected array $casts = [
-        'birthdate' => 'datetime',
-    ];
-
-    // (Optional)
-    // You can define any number of additional methods or properties
-    // ...
-}
+        /**
+         * (Opcional) Define las conversiones de tipo (casting).
+         * Los timestamps (`created_at`, `updated_at`, `deleted_at`) se
+         * convierten a 'datetime' automáticamente.
+         */
+        protected array $casts = [
+            'birthdate' => 'datetime',
+            'is_admin'  => 'boolean', // Ejemplo de otro cast
+        ];
+    }
 ```
 
 ### Use the models and entities quickly
@@ -118,4 +140,5 @@ class User extends Entity
 You may not have so much configuration, when using fast models you can omit the entity.
 Check that documentation below.
 
--   [Models without instance](docs/model_without_instance.md)
+-   [Models without instance](./model_without_instance.md)
+-   [Entity digging deeper](./entity_digging_deeper.md)

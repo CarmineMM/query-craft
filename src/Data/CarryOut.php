@@ -255,7 +255,7 @@ abstract class CarryOut
     }
 
     /**
-     * Rest the SQL
+     * Resets the query builder state to its initial values.
      */
     public function reset(): static
     {
@@ -272,5 +272,20 @@ abstract class CarryOut
         $this->data = [];
 
         return $this;
+    }
+
+    /**
+     * Adds a value to the bindings array.
+     *
+     * @param mixed $value The value to bind.
+     * @return void
+     */
+    protected function addBinding($value): void
+    {
+        if (is_array($value)) {
+            $this->bindings = array_merge($this->bindings, $value);
+        } else {
+            $this->bindings[] = $value;
+        }
     }
 }

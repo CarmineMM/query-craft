@@ -38,5 +38,6 @@ $data = $model->all();
 -   [Models without instance](docs/model_without_instance.md)
 -   [Using Model](docs/using_model.md)
 -   [Model digging deeper](docs/model_digging_deeper.md)
+-   [Entity digging deeper](docs/entity_digging_deeper.md)
 -   [Debug](docs/debug.md)
 -   [ETL](docs/etl.md)

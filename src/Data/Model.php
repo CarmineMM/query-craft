@@ -118,9 +118,13 @@ class Model extends BaseModel
     public function where(string $column, string $sentence, string $three = ''): static
     {
         $column = Sanitizer::string($column);
-        $three = Sanitizer::string($three);
 
-        $this->driver->where($column, $sentence, $three);
+        if (func_num_args() === 2) {
+            $this->driver->where($column, '=', $sentence);
+        } else {
+            $this->driver->where($column, $sentence, $three);
+        }
+
         return $this;
     }
 
@@ -135,9 +139,13 @@ class Model extends BaseModel
     public function orWhere(string $column, string $sentence, string $three = ''): static
     {
         $column = Sanitizer::string($column);
-        $three = Sanitizer::string($three);
 
-        $this->driver->orWhere($column, $sentence, $three);
+        if (func_num_args() === 2) {
+            $this->driver->orWhere($column, '=', $sentence);
+        } else {
+            $this->driver->orWhere($column, $sentence, $three);
+        }
+
         return $this;
     }
 

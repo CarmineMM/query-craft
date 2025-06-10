@@ -82,7 +82,7 @@ trait Timestamps
     /**
      * Indica si se hace uso de soft deletes
      *
-     * @return boolean
+     * @return static
      */
     public function setSoftDeletes(bool $softDeletes): static
     {

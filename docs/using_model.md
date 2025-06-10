@@ -1,65 +1,89 @@
-# Using model
+# Usando el Modelo
 
-The model can and should be used to obtain data from the database.
-In turn create, update and delete.
+El modelo es la vía principal para interactuar con tus tablas de la base de datos. Te permite obtener, crear, actualizar y eliminar registros de una manera fluida e intuitiva.
 
-### Simple data retrieval
+> **Nota de Seguridad:** QueryCraft se encarga de entrecomillar automáticamente los nombres de las columnas y tablas (ej. `name` se convierte en `"name"`) para prevenir conflictos con palabras reservadas de SQL y mejorar la compatibilidad entre diferentes motores de base de datos.
+
+### Obtención de Datos
+
+#### Obtener todos los registros
 
 ```php
-// Use to obtain all columns
+// Obtiene todas las columnas de todos los registros
 $data = $model->all();
 
-// Use to obtain only certain columns
+// Obtiene solo las columnas especificadas
 $data = $model->all(['id', 'name']);
 ```
 
-### Filter data
+#### Filtrar resultados con `where`
+
+Puedes encadenar cláusulas `where` para construir consultas más complejas.
 
 ```php
-$data = $model->where('name', 'John')->all(); // WHERE name = 'John'
+// Búsqueda simple: WHERE name = 'John'
+$data = $model->where('name', 'John')->all();
 
-$data = $model->where('name', 'LIKE', 'John%')->all(); // WHERE name LIKE 'John%'
+// Usando otros operadores: WHERE name LIKE 'John%'
+$data = $model->where('name', 'LIKE', 'John%')->all();
 
-$data = $model->where('name', '!=', 'John')->all(); // WHERE name != 'John'
+// Encadenando cláusulas: WHERE status = 'active' AND age > 30
+$data = $model->where('status', 'active')->where('age', '>', 30)->all();
+
+// Usando `orWhere`: WHERE status = 'active' OR is_premium = true
+$data = $model->where('status', 'active')->orWhere('is_premium', true)->all();
 ```
 
-### Get the first model
+#### Obtener el primer registro
 
-Will obtain the first record that complies with the sentence
+Recupera el primer registro que coincida con la consulta.
 
 ```php
 $data = $model->where('name', 'John')->first();
 ```
 
-### Null and not null
+#### Comprobar valores nulos
 
 ```php
-$data = $model->whereNull('name')->all();
+// WHERE deleted_at IS NULL
+$data = $model->whereNull('deleted_at')->all();
 
-$data = $model->whereNotNull('name')->all();
+// WHERE processed_at IS NOT NULL
+$data = $model->whereNotNull('processed_at')->all();
 ```
 
-### Limiting the amount of records
+#### Limitar la cantidad de registros
 
 ```php
+// Obtiene los primeros 10 registros
 $data = $model->limit(10)->all();
+
+// Obtiene 10 registros, omitiendo los primeros 20 (paginación)
+$data = $model->limit(10, 20)->all();
 ```
 
-### Limiting the amount of records with offset
+#### Contar registros
 
 ```php
-$data = $model->limit(limit: 10, offset: 20)->all();
+// Cuenta todos los registros en la tabla
+$total = $model->count();
+
+// Cuenta los registros que cumplen una condición
+$activeUsers = $model->where('status', 'active')->count();
 ```
 
-### Count elements
+### Depurar con `toSql`
+
+Puedes ver la consulta SQL que se generará antes de ejecutarla.
 
 ```php
-$data = $model->count();
+$sql = $model->where('name', 'LIKE', 'John%')->toSql();
+// SELECT * FROM "users" WHERE "name" LIKE ?
 ```
 
-## Creating elements
+## Creación de Registros
 
-Simple creation using an arrangement
+Creación simple usando un array.
 
 ```php
 $data = $model->create([
@@ -68,8 +92,7 @@ $data = $model->create([
 ]);
 ```
 
-Creation using an entity.
-The advantage of using the entity is that you can access its casts.
+Creación usando una `Entity`. La ventaja es que puedes aprovechar los `casts` definidos en tu entidad.
 
 ```php
 $data = $model->create(new Entity([
@@ -78,8 +101,23 @@ $data = $model->create(new Entity([
 ]));
 ```
 
-## Deleting elements
+## Actualización de Registros
+
+Para actualizar registros, primero debes especificar qué filas modificar usando una cláusula `where`.
 
 ```php
-$data = $model->delete();
+$model->where('id', 1)->update([
+    'name' => 'John Doe',
+    'email' => 'john.doe@example.com',
+]);
 ```
+
+## Eliminación de Registros
+
+Por seguridad, no se permiten eliminaciones masivas por defecto. Siempre debes especificar una condición `where`.
+
+```php
+// Elimina el usuario con id = 1
+$model->where('id', 1)->delete();
+```
+Si el modelo tiene `soft deletes` habilitado, este método actualizará el campo `deleted_at` en lugar de eliminar el registro permanentemente.
