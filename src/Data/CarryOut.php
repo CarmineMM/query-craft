@@ -45,11 +45,25 @@ abstract class CarryOut
     ];
 
     /**
-     * Snapshot of the layouts
+     * Where clauses
      *
      * @var array
      */
-    protected array $layout_snapshot = [];
+    protected array $wheres = [];
+
+    /**
+     * All bindings for the query
+     *
+     * @var array
+     */
+    protected array $bindings = [];
+
+    /**
+     * Snapshot of the query builder state
+     *
+     * @var array
+     */
+    protected array $snapshots = [];
 
     /**
      * Conexión por PDO
@@ -59,28 +73,50 @@ abstract class CarryOut
     protected \PDO $pdo;
 
     /**
-     * Prepares the Select
+     * Prepares the SQL query by compiling all its parts.
+     * Each driver is responsible for implementing this method.
      *
      * @return static
      */
-    protected function prepareSql(): static
-    {
-        if ($this->model->getSoftDeletedAtField() !== null) {
-            $this->model->getDriver()->whereNotNull($this->model->getSoftDeletedAtField());
-        }
+    abstract protected function prepareSql(): static;
 
-        $columns = implode(', ', $this->columns);
-        $this->sql = str_replace('{column}', $columns, $this->sql);
-        $this->sql = trim(
-            str_replace(
-                ['{innerQuery}', '{where}', '{group}', '{order}', '{limit}', '{offset}'],
-                ['', '', '', '', '', ''],
-                $this->sql
-            )
-        );
+    /**
+     * Take a snapshot of the current query builder state.
+     *
+     * @param string|null $name The name of the snapshot.
+     * @return static
+     */
+    public function takeSnapshot(?string $name = null): static
+    {
+        $this->snapshots[$name ?? 'default'] = [
+            'columns'  => $this->columns,
+            'wheres'   => $this->wheres,
+            'bindings' => $this->bindings,
+        ];
 
         return $this;
     }
+
+    /**
+     * Restore the query builder state from a snapshot.
+     *
+     * @param string|null $name The name of the snapshot to restore.
+     * @return static
+     */
+    public function restoreSnapshot(?string $name = null): static
+    {
+        $snapshot = $this->snapshots[$name ?? 'default'] ?? null;
+
+        if ($snapshot) {
+            $this->columns  = $snapshot['columns'];
+            $this->wheres   = $snapshot['wheres'];
+            $this->bindings = $snapshot['bindings'];
+        }
+
+        return $this;
+    }
+
+
 
     /**
      * Set Columns for the SELECT request
@@ -109,8 +145,8 @@ abstract class CarryOut
 
         // Verificar si la consulta existe en cache
         // No guardar consultar que sean muy largas
-        if ($this->model->hasCache() && strlen($this->sql) < 60 && Cache::has($this->sql)) {
-            $get = Cache::get($this->sql);
+        if ($this->model->hasCache() && strlen($this->sql) < 60 && Cache::has($this->sql . json_encode($this->bindings))) {
+            $get = Cache::get($this->sql . json_encode($this->bindings));
 
             if (DB::getDebugMode()) {
                 $endtime = microtime(true) - $startTime;
@@ -134,7 +170,7 @@ abstract class CarryOut
         $query = $this->pdo->prepare($this->sql);
 
         try {
-            $query->execute($params);
+            $query->execute(array_merge($this->bindings, $params));
         } catch (\Throwable $th) {
             // Consultation execution error
             // If you see this error, it is because there is an error in the SQL consultation.
@@ -155,7 +191,7 @@ abstract class CarryOut
             }
 
             if ($this->model->hasCache() && strlen($this->sql) < 60) {
-                Cache::set($this->sql, $data);
+                Cache::set($this->sql . json_encode($this->bindings), $data);
             }
         }
         // Si es de tipo create
@@ -206,7 +242,7 @@ abstract class CarryOut
         $query = $this->pdo->prepare($this->sql);
 
         try {
-            $query->execute($params);
+            $query->execute(array_merge($this->bindings, $params));
         } catch (\Throwable $th) {
             // Consultation execution error
             // If you see this error, it is because there is an error in the SQL consultation.
@@ -225,6 +261,8 @@ abstract class CarryOut
     {
         $this->sql = '';
         $this->columns = ['*'];
+        $this->wheres = [];
+        $this->bindings = [];
         $this->layout =  [
             'select' => 'SELECT {column} {innerQuery} FROM {table} {where} {group} {order} {limit} {offset}',
             'insert' => 'INSERT INTO {table} ({keys}) VALUES ({values})',

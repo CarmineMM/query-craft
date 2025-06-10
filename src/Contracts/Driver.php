@@ -46,4 +46,8 @@ interface Driver
     public function reset(): static;
 
     public function count(string $column = '*'): int;
+
+    public function takeSnapshot(?string $name = null): static;
+
+    public function restoreSnapshot(?string $name = null): static;
 }

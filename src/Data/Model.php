@@ -289,4 +289,28 @@ class Model extends BaseModel
     {
         return $this->driver->count($column);
     }
+
+    /**
+     * Take a snapshot of the current query builder state.
+     *
+     * @param string|null $name The name of the snapshot.
+     * @return static
+     */
+    public function takeSnapshot(?string $name = null): static
+    {
+        $this->driver->takeSnapshot($name);
+        return $this;
+    }
+
+    /**
+     * Restore the query builder state from a snapshot.
+     *
+     * @param string|null $name The name of the snapshot to restore.
+     * @return static
+     */
+    public function restoreSnapshot(?string $name = null): static
+    {
+        $this->driver->restoreSnapshot($name);
+        return $this;
+    }
 }

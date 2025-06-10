@@ -36,15 +36,19 @@ class Extract
      *
      * @var array
      */
-    private array $extractAttributes = ['*'];
+    protected array $extractAttributes = ['*'];
 
     /**
      * Construct
      */
     public function __construct(
-        public Model $model
+        protected Model $model,
+        int $splitIn = 1000,
+        array $extractAttributes = ['*']
     ) {
-        //
+        $this->splitIn = $splitIn;
+        $this->extractAttributes = $extractAttributes;
+        $this->model->takeSnapshot('etl_base_query');
     }
 
     /**
@@ -78,6 +82,8 @@ class Extract
      */
     public function extract(): array
     {
+        $this->model->restoreSnapshot('etl_base_query');
+
         $data = $this->model->limit($this->splitIn, $this->offset)->select($this->extractAttributes)->get();
 
         if (count($data) < 1) {

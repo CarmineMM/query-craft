@@ -19,6 +19,59 @@ use InvalidArgumentException;
 abstract class SQLBaseDriver extends CarryOut
 {
     /**
+     * Prepares the SQL query by compiling all its parts.
+     *
+     * @return static
+     */
+    protected function prepareSql(): static
+    {
+        if ($this->model->getSoftDeletedAtField() !== null) {
+            $this->whereNotNull($this->model->getSoftDeletedAtField());
+        }
+
+        // Replace {column} placeholder with the selected columns
+        $this->sql = str_replace('{column}', implode(', ', $this->columns), $this->sql);
+
+        $this->compileWheres();
+
+        // Remove any unused placeholders
+        $this->cleanupSql();
+
+        return $this;
+    }
+
+    /**
+     * Cleans up the SQL query by removing unused placeholders.
+     */
+    protected function cleanupSql(): void
+    {
+        // This regex will find all {placeholders} like {innerQuery}, {group}, etc. and remove them
+        $this->sql = preg_replace('/\{\w+\}/', '', $this->sql);
+        // Also remove any resulting double spaces and trim whitespace
+        $this->sql = trim(preg_replace('/\s\s+/', ' ', $this->sql));
+    }
+
+    /**
+     * Compiles the where clauses into a single SQL string.
+     */
+    protected function compileWheres(): void
+    {
+        if (empty($this->wheres)) {
+            $this->sql = str_replace('{where}', '', $this->sql);
+            return;
+        }
+
+        $whereClauses = [];
+        foreach ($this->wheres as $where) {
+            $whereClauses[] = "{$where['boolean']} {$where['column']} {$where['operator']} {$where['placeholder']}";
+        }
+
+        // Remove the initial 'AND ' or 'OR ' from the first clause
+        $sql = ltrim(implode(' ', $whereClauses), ' ANDOR');
+
+        $this->sql = str_replace('{where}', "WHERE {$sql}", $this->sql);
+    }
+    /**
      * Prepara la instancia del SQL
      *
      * @param string $type
@@ -55,79 +108,45 @@ abstract class SQLBaseDriver extends CarryOut
     }
 
     /**
-     * Where clause for the query.
-     * TODO: Extender el Where para soportar más tipos de sentencias
+     * Add a basic where clause to the query.
      *
      * @param string $column
-     * @param string $sentence
-     * @param string $three
+     * @param string $operator
+     * @param mixed  $value
+     * @param string $boolean
      * @return static
      */
-    public function where(string $column, string $sentence, string $three = ''): static
+    public function where(string $column, string $operator, mixed $value = null, string $boolean = 'AND'): static
     {
-        // Almacenar el 'WHERE' en una propiedad para poder aplicarlo al SQL final
-        // Esto es más robusto que modificar directamente `layout` en cada llamada.
-        // Asumo que tienes una propiedad como `$this->whereClauses = []` en `CarryOut`
-        // o que tu `prepareSql` manejará esto de otra forma más dinámica.
-        // Por simplicidad en este ejemplo, asumo que `layout` contiene placeholders
-        // para el 'WHERE' que se llenarán posteriormente.
-
-        $whereClause = $three
-            ? "{$column} {$sentence} {$three}"
-            : "{$column} = '{$sentence}'";
-
-        // Aquí deberías tener una forma más robusta de construir la cláusula WHERE.
-        // Por ejemplo, concatenando las cláusulas WHERE en una propiedad del objeto,
-        // y luego inyectándolas en `prepareSql`.
-        // Para este ejemplo, lo dejo como lo tienes, pero ten en cuenta la mejora.
-        foreach ($this->layout as $key => $value) {
-            if (str_contains($value, 'WHERE')) {
-                $this->layout[$key] = str_replace('{where}', "AND {$whereClause} {where}", $value);
-            } else {
-                // Si aún no hay WHERE, lo agregamos
-                $this->layout[$key] = str_replace('{where}', "WHERE {$whereClause} {where}", $value);
-            }
+        if (func_num_args() === 2) {
+            $value = $operator;
+            $operator = '=';
         }
 
-        return $this;
-    }
+        $this->wheres[] = [
+            'column'      => $column,
+            'operator'    => $operator,
+            'value'       => $value,
+            'boolean'     => $boolean,
+            'placeholder' => '?',
+        ];
 
-    /**
-     * Where clause for the query
-     *
-     * @param string $column
-     * @param string $sentence
-     * @param string $three
-     * @return static
-     */
-    public function orWhere(string $column, string $sentence, string $three = ''): static
-    {
-        $whereClause = $three
-            ? "{$column} {$sentence} {$three}"
-            : "{$column} = '{$sentence}'";
-
-        foreach ($this->layout as $key => $value) {
-            if (str_contains($value, 'WHERE')) {
-                $this->layout[$key] = str_replace('{where}', "OR {$whereClause} {where}", $value);
-            } else {
-                $this->layout[$key] = str_replace('{where}', "WHERE {$whereClause} {where}", $value);
-            }
-        }
+        $this->bindings[] = $value;
 
         return $this;
     }
 
     /**
-     * Where clause for the query
+     * Add an "or where" clause to the query.
      *
-     * @param string $column
+     * @param  string  $column
+     * @param  string  $operator
+     * @param  mixed   $value
      * @return static
      */
-    public function whereNotNull(string $column): static
+    public function orWhere(string $column, string $operator, mixed $value = null): static
     {
-        $this->where($column, 'IS NOT', 'NULL');
-
-        return $this;
+        return $this->where($column, $operator, $value, 'OR');
     }
 
     /**
@@ -136,9 +155,42 @@ abstract class SQLBaseDriver extends CarryOut
      * @param string $column
      * @return static
      */
-    public function whereNull(string $column): static
+    /**
+     * Add a "where not null" clause to the query.
+     *
+     * @param  string  $column
+     * @param  string  $boolean
+     * @return static
+     */
+    public function whereNotNull(string $column, string $boolean = 'AND'): static
     {
-        $this->where($column, 'IS', 'NULL');
+        $this->wheres[] = [
+            'column'      => $column,
+            'operator'    => 'IS NOT NULL',
+            'value'       => null,
+            'boolean'     => $boolean,
+            'placeholder' => '',
+        ];
+
+        return $this;
+    }
+
+    /**
+     * Where clause for the query
+     *
+     * @param string $column
+     * @param string $boolean
+     * @return static
+     */
+    public function whereNull(string $column, string $boolean = 'AND'): static
+    {
+        $this->wheres[] = [
+            'column'      => $column,
+            'operator'    => 'IS NULL',
+            'value'       => null,
+            'boolean'     => $boolean,
+            'placeholder' => '',
+        ];
 
         return $this;
     }
@@ -341,15 +393,20 @@ abstract class SQLBaseDriver extends CarryOut
      */
     public function delete(): array
     {
-        // Verificar si la instancia de delete no ha cambiado
-        if ($this->layout['delete'] === 'DELETE FROM {table} {where}' && !$this->model->allow_bulk_delete) {
-            // Estas lanzando un DELETE sobre una tabla sin antes delimitar por un 'WHERE'
-            // No es necesario aclarar que esto podría eliminar todos los datos de su tabla.
-            // Si quieres permitir esta acción, habilita el allow_bulk_delete en tu modelo o el DB::allowBulkDelete()
+        if (empty($this->wheres) && !$this->model->allow_bulk_delete) {
+            // You are launching a DELETE on a table without first delimiting by a 'WHERE'.
+            // It is not necessary to clarify that this could delete all the data in your table.
+            // If you want to allow this action, enable allow_bulk_delete in your model or DB::allowBulkDelete().
             throw new Exception("Your delete doesn't have a Where! 😢", 500);
         }
 
-        // TODO: Verificar que el modelo tiene un deleted at
+        // Handle soft deletes
+        if ($this->model->getSoftDeletedAtField() !== null) {
+            return $this->update([
+                $this->model->getSoftDeletedAtField() => date('Y-m-d H:i:s')
+            ], $this->model);
+        }
+
         $this->instance('delete');
 
         return $this->exec();
@@ -358,45 +415,37 @@ abstract class SQLBaseDriver extends CarryOut
     /**
      * Update element
      *
-     * @param array $data
+     * @param array|Entity $values
+     * @param Model $model
      * @return array
      */
     public function update(array|Entity $values, Model $model): array
     {
+        if (empty($this->wheres) && !$model->allow_bulk_update) {
+            throw new Exception("Your update doesn't have a Where clause! 😢 Bulk updates are not allowed by default. Enable allow_bulk_update in your model or add a where condition.", 500);
+        }
+
         $this->instance('update');
 
         $values = $values instanceof Entity ? $values->toArray() : $values;
         $fillable_data = Modeling::fillableData($model, $values);
         $update_data = Modeling::applyUpdatedAt($model, $fillable_data)['values'];
 
-        // Construir la cláusula SET
+        // Build the SET clause
         $setClauses = [];
-        $params = [];
+        $updateBindings = [];
         foreach ($update_data as $key => $value) {
-            $setClauses[] = "{$key} = :{$key}";
-            $params[":{$key}"] = Sanitizer::string($value);
+            $setClauses[] = "{$key} = ?";
+            $updateBindings[] = $value;
         }
+        
+        // Prepend update bindings to the main bindings array to ensure they come first
+        $this->bindings = array_merge($updateBindings, $this->bindings);
 
-        // Unir las cláusulas SET
-        $set_string = implode(', ', $setClauses);
+        $setString = implode(', ', $setClauses);
 
-        // Reemplazar el placeholder {set} en la SQL
-        $this->sql = str_replace('{set}', $set_string, $this->sql);
+        $this->sql = str_replace('{set}', $setString, $this->sql);
 
-        // Una forma sencilla de verificar si el WHERE ha sido añadido
-        // (esto depende de cómo manejes el placeholder {where} internamente)
-        if (str_contains($this->sql, '{where}') && !$model->allow_bulk_update) {
-            // Este {where} aún existe en la sentencia, significa que no se aplicó un WHERE
-            throw new Exception("Your update doesn't have a Where clause! 😢 Bulk updates are not allowed by default. Enable allow_bulk_update in your model or add a where condition.", 500);
-        }
-
-        // La llamada a exec se encargará de preparar y ejecutar la consulta
-        // y de eliminar el placeholder {where} si está vacío.
-        $result = $this->exec($params);
-
-        // Puedes devolver los datos actualizados junto con las filas afectadas.
-        // `exec` debería devolver la información relevante (ej. affected_rows).
-        // Si `exec` ya devuelve un array con `affected_rows`, simplemente retornarlo.
-        return $result;
+        return $this->exec();
     }
 }
