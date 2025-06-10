@@ -20,9 +20,9 @@ abstract class BaseModel
     /**
      * Return type, the returnable types are: array, object, EntityClass.
      *
-     * @var string
+     * @var string|Entity
      */
-    protected string $returnType = 'array';
+    protected string|Entity $returnType = 'array';
 
     /**
      * Using cache
@@ -188,10 +188,10 @@ abstract class BaseModel
     /**
      * Set return type
      *
-     * @param string $returnType
+     * @param string|Entity $returnType
      * @return static
      */
-    public function setReturnType(string $returnType): static
+    public function setReturnType(string|Entity $returnType): static
     {
         $this->returnType = $returnType;
 

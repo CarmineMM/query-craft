@@ -19,6 +19,14 @@ use InvalidArgumentException;
 abstract class SQLBaseDriver extends CarryOut
 {
     /**
+     * SQL functions that must be ignored in the AddQuotes
+     * And not locate in quotes.
+     *
+     * @var array
+     */
+    public static $selectFunction = ["COUNT(", "SUM(", "AVG(", "MAX(", "MIN(", "TOP("];
+
+    /**
      * Prepares the SQL query by compiling all its parts.
      *
      * @return static
@@ -153,6 +161,13 @@ abstract class SQLBaseDriver extends CarryOut
     {
         if ($identifier === '*') {
             return $identifier;
+        }
+
+        // Verificar si el identificador contiene alguna función SQL que deba ser omitida
+        foreach (static::$selectFunction as $function) {
+            if (stripos($identifier, $function) !== false) {
+                return $identifier;
+            }
         }
 
         $parts = explode('.', $identifier);
@@ -438,9 +453,7 @@ abstract class SQLBaseDriver extends CarryOut
     public function toSql($sentence = 'select'): string
     {
         $this->instance($sentence);
-        $this->compileColumns(['*']);
-        $this->compileWheres();
-        $this->compileOrderBy();
+        $this->prepareSql();
 
         $sql = $this->sql;
         $this->reset();
