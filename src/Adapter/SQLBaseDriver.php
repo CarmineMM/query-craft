@@ -388,7 +388,7 @@ abstract class SQLBaseDriver extends CarryOut
      *
      * @example
      * $sql = $db->table('users')->where('id', 1)->toSql();
-     * // "SELECT * FROM \"users\" WHERE \"id\" = ?"
+     * "SELECT * FROM \"users\" WHERE \"id\" = ?"
      */
     public function toSql($sentence = 'select'): string
     {

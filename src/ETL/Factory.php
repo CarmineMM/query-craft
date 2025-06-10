@@ -87,6 +87,7 @@ class Factory
         $debug = $debug || DB::getDebugMode();
 
         if ($debug) {
+            DB::debugMode(true);
             echo "\nStart Process ETL";
             $startTime = microtime(true);
             $startMemory = memory_get_usage();
@@ -121,6 +122,7 @@ class Factory
             echo "\nTime: " . TimeConversion::fromSeconds($endTime - $startTime)->setSymbolMode('long')->smartConversion();
             echo "\nMemory: " . DigitalUnitsConversion::fromBytes(($endMemory - $startMemory))->setSymbolMode('short')->smartConversion();
             echo "\nData Inserted: {$dataInserted}";
+            DB::debugMode(false);
         }
     }
 }
