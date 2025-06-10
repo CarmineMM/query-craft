@@ -35,6 +35,16 @@ class Model extends BaseModel
     /**
      * Constructor of the model
      */
+    /**
+     * Get the primary key for the model.
+     *
+     * @return string
+     */
+    public function getPrimaryKeyName(): string
+    {
+        return $this->primaryKey;
+    }
+
     public function __construct(string $connection = 'default')
     {
         if ($this->table === '') {
@@ -201,6 +211,19 @@ class Model extends BaseModel
      * // ...->whereNull('deleted_at')
      * // Compiles to: WHERE "deleted_at" IS NULL
      */
+    /**
+     * Adds an ORDER BY clause to the query.
+     *
+     * @param string $column The column to order by.
+     * @param string $direction The direction, 'ASC' or 'DESC'.
+     * @return static The current instance for method chaining.
+     */
+    public function orderBy(string $column, string $direction = 'ASC'): static
+    {
+        $this->driver->orderBy($column, $direction);
+        return $this;
+    }
+
     public function whereNull(string $column): static
     {
         $this->driver->whereNull(Sanitizer::string($column));

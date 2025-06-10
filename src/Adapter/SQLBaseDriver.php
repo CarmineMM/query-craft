@@ -34,6 +34,8 @@ abstract class SQLBaseDriver extends CarryOut
         $this->sql = str_replace('{column}', implode(', ', $columns), $this->sql);
 
         $this->compileWheres();
+        $this->compileOrderBy();
+        $this->compileLimit();
 
         // Remove any unused placeholders
         $this->cleanupSql();
@@ -80,6 +82,52 @@ abstract class SQLBaseDriver extends CarryOut
         }
 
         $this->sql = str_replace('{where}', "WHERE {$sql}", $this->sql);
+    }
+
+    /**
+     * Adds an ORDER BY clause to the query.
+     *
+     * @param string $column The column to order by.
+     * @param string $direction The direction, 'ASC' or 'DESC'.
+     * @return static
+     */
+    public function orderBy(string $column, string $direction = 'ASC'): static
+    {
+        $direction = strtoupper($direction);
+        if (!in_array($direction, ['ASC', 'DESC'])) {
+            $direction = 'ASC';
+        }
+        $this->orderBy[] = ['column' => $this->addQuotes($column), 'direction' => $direction];
+        return $this;
+    }
+
+    /**
+     * Compiles the ORDER BY clauses into the SQL query.
+     */
+    protected function compileOrderBy(): void
+    {
+        if (empty($this->orderBy)) {
+            $this->sql = str_replace('{orderby}', '', $this->sql);
+            return;
+        }
+
+        $clauses = [];
+        foreach ($this->orderBy as $order) {
+            $clauses[] = "{$order['column']} {$order['direction']}";
+        }
+
+        $this->sql = str_replace('{orderby}', 'ORDER BY ' . implode(', ', $clauses), $this->sql);
+    }
+
+    protected function compileLimit(): void
+    {
+        if ($this->limit !== null) {
+            $this->sql = str_replace('{limit}', "LIMIT {$this->limit}", $this->sql);
+        }
+
+        if ($this->offset !== null) {
+            $this->sql = str_replace('{offset}', "OFFSET {$this->offset}", $this->sql);
+        }
     }
 
     /**
@@ -325,11 +373,8 @@ abstract class SQLBaseDriver extends CarryOut
     {
         $this->instance('select');
 
-        $this->sql = str_replace('{limit}', "LIMIT {$limit}", $this->sql);
-
-        if ($offset !== null) {
-            $this->sql = str_replace('{offset}', "OFFSET {$offset}", $this->sql);
-        }
+        $this->limit = $limit;
+        $this->offset = $offset;
 
         return $this;
     }
@@ -393,11 +438,26 @@ abstract class SQLBaseDriver extends CarryOut
     public function toSql($sentence = 'select'): string
     {
         $this->instance($sentence);
-        $this->prepareSql();
+        $this->compileColumns(['*']);
+        $this->compileWheres();
+        $this->compileOrderBy();
+
         $sql = $this->sql;
         $this->reset();
 
         return $sql;
+    }
+
+    /**
+     * Compiles the stored columns into a single SQL string.
+     *
+     * It constructs the `SELECT` part of the query from the `$this->columns` array,
+     * ensuring correct quotes and placeholders.
+     */
+    protected function compileColumns(): void
+    {
+        $columns = array_map([$this, 'addQuotes'], $this->columns);
+        $this->sql = str_replace('{columns}', implode(', ', $columns), $this->sql);
     }
 
     /**

@@ -5,49 +5,43 @@ namespace CarmineMM\QueryCraft\ETL;
 class Transform
 {
     /**
-     * Transformed data
+     * Transforma un conjunto de datos basado en un mapeo de atributos.
      *
-     * @var array
-     */
-    private array $transformedData;
-
-    /**
-     * Constructor
+     * Este método es estático para evitar la sobrecarga de instanciar un nuevo objeto
+     * en cada iteración del bucle del ETL.
      *
-     * @param array $getData
+     * @param array $data El array de datos a transformar.
+     * @param array $pairAttributes El mapeo de atributos de origen a destino.
+     * @return array El array de datos transformados.
      */
-    public function __construct(
-        public array $getData,
-    ) {
-        //
-    }
-
-    /**
-     * Transform the data
-     *
-     * @param array $pairAttributes
-     * @return array
-     */
-    public function transform(array $pairAttributes): array
+    public static function transform(array $data, array $pairAttributes): array
     {
-        $this->transformedData = [];
+        // Usamos array_map para la iteración principal, ya que es mucho más rápido
+        // para arrays grandes que un bucle foreach en PHP puro.
+        return array_map(function (array $row) use ($pairAttributes) {
+            $transformedRow = [];
 
+            // El bucle interno sobre los atributos es pequeño y rápido.
+            foreach ($pairAttributes as $fromKey => $toKeyOrCallable) {
+                // Si la clave de origen no existe en la fila, la omitimos.
+                if (!array_key_exists($fromKey, $row)) {
+                    continue;
+                }
 
-        foreach ($this->getData as $data) {
-            $transformedData = [];
-
-            foreach ($pairAttributes as $fromData => $toData) {
-                if (is_callable($toData) && $toData != 'abs') {
-                    $result = $toData($data);
-                    $transformedData[$result[0]] = $result[1];
+                // Maneja transformaciones complejas usando funciones callable.
+                if (is_callable($toKeyOrCallable) && $toKeyOrCallable !== 'abs') {
+                    $result = $toKeyOrCallable($row);
+                    // Se espera que el callable devuelva [nueva_clave, nuevo_valor].
+                    if (is_array($result) && count($result) === 2) {
+                        $transformedRow[$result[0]] = $result[1];
+                    }
                 } else {
-                    $transformedData[$toData] = $data[$fromData];
+                    // Ruta común: simple renombrado de clave.
+                    $transformedRow[$toKeyOrCallable] = $row[$fromKey];
                 }
             }
 
-            $this->transformedData[] = $transformedData;
-        }
-
-        return $this->transformedData;
+            return $transformedRow;
+        }, $data);
     }
 }

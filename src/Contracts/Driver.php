@@ -50,4 +50,6 @@ interface Driver
     public function takeSnapshot(?string $name = null): static;
 
     public function restoreSnapshot(?string $name = null): static;
+
+    public function orderBy(string $column, string $direction = 'ASC'): static;
 }

@@ -52,6 +52,27 @@ abstract class CarryOut
     protected array $wheres = [];
 
     /**
+     * Order by clauses
+     *
+     * @var array
+     */
+    protected array $orderBy = [];
+
+    /**
+     * Limit for the query
+     *
+     * @var int|null
+     */
+    protected ?int $limit = null;
+
+    /**
+     * Offset for the query
+     *
+     * @var int|null
+     */
+    protected ?int $offset = null;
+
+    /**
      * All bindings for the query
      *
      * @var array
@@ -262,7 +283,10 @@ abstract class CarryOut
         $this->sql = '';
         $this->columns = ['*'];
         $this->wheres = [];
+        $this->orderBy = [];
         $this->bindings = [];
+        $this->limit = null;
+        $this->offset = null;
         $this->layout =  [
             'select' => 'SELECT {column} {innerQuery} FROM {table} {where} {group} {order} {limit} {offset}',
             'insert' => 'INSERT INTO {table} ({keys}) VALUES ({values})',

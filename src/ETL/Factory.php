@@ -94,19 +94,21 @@ class Factory
             $dataInserted = 0;
         }
 
+        $load = new Load($this->to);
+
         while ($this->extractor->requiredMoreExtract) {
             //- Extract Data from the source
             $data = $this->extractor->extract();
 
-            if (count($data) < 1) {
+            if (empty($data)) {
                 break;
             }
 
             //- Transform Data
-            $transformed = (new Transform($data))->transform($this->extractAttributes);
+            $transformed = Transform::transform($data, $this->extractAttributes);
 
             //- Insert de transformed data
-            $load = (new Load($this->to))->insert($transformed);
+            $load->insert($transformed);
 
             if ($debug) {
                 $dataInserted += count($data);
