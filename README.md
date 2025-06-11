@@ -41,3 +41,4 @@ $data = $model->all();
 -   [Entity digging deeper](docs/entity_digging_deeper.md)
 -   [Debug](docs/debug.md)
 -   [ETL](docs/etl.md)
+-   [Migrations](docs/migrations.md)
