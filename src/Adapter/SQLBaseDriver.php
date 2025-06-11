@@ -648,6 +648,20 @@ abstract class SQLBaseDriver extends CarryOut
      * // Update user with id 1
      * $db->table('users')->where('id', 1)->update(['status' => 'inactive'], new User());
      */
+    public function statement(string $query): bool
+    {
+        try {
+            $stmt = $this->pdo->prepare($query);
+            return $stmt->execute();
+        } catch (\PDOException $e) {
+            // In a real application, you would log this error.
+            // For now, we can re-throw it or return false.
+            // Depending on how you want to handle errors.
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
     public function update(array|Entity $values, Model $model): array
     {
         if (empty($this->wheres) && !$model->allow_bulk_update) {

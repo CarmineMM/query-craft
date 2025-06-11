@@ -2,3 +2,4 @@
 vendor/
 # composer.lock
 check-test.php
+migration-test.php

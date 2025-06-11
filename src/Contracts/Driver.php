@@ -52,4 +52,6 @@ interface Driver
     public function restoreSnapshot(?string $name = null): static;
 
     public function orderBy(string $column, string $direction = 'ASC'): static;
+
+    public function statement(string $query): bool;
 }
