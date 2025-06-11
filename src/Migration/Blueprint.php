@@ -104,6 +104,106 @@ class Blueprint
     }
 
     /**
+     * Create a new text column on the table.
+     *
+     * @param  string  $column
+     * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
+     */
+    public function text(string $column): ColumnDefinition
+    {
+        return $this->addColumn('text', $column);
+    }
+
+    /**
+     * Create a new medium text column on the table.
+     *
+     * @param  string  $column
+     * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
+     */
+    public function mediumText(string $column): ColumnDefinition
+    {
+        return $this->addColumn('mediumText', $column);
+    }
+
+    /**
+     * Create a new long text column on the table.
+     *
+     * @param  string  $column
+     * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
+     */
+    public function longText(string $column): ColumnDefinition
+    {
+        return $this->addColumn('longText', $column);
+    }
+
+    /**
+     * Create a new tiny integer column on the table.
+     *
+     * @param  string  $column
+     * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
+     */
+    public function tinyInteger(string $column): ColumnDefinition
+    {
+        return $this->addColumn('tinyInteger', $column);
+    }
+
+    /**
+     * Create a new small integer column on the table.
+     *
+     * @param  string  $column
+     * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
+     */
+    public function smallInteger(string $column): ColumnDefinition
+    {
+        return $this->addColumn('smallInteger', $column);
+    }
+
+    /**
+     * Create a new medium integer column on the table.
+     *
+     * @param  string  $column
+     * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
+     */
+    public function mediumInteger(string $column): ColumnDefinition
+    {
+        return $this->addColumn('mediumInteger', $column);
+    }
+
+    /**
+     * Create a new enum column on the table.
+     *
+     * @param  string  $column
+     * @param  array  $allowed
+     * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
+     */
+    public function enum(string $column, array $allowed): ColumnDefinition
+    {
+        return $this->addColumn('enum', $column, compact('allowed'));
+    }
+
+    /**
+     * Create a new timestamp column on the table.
+     *
+     * @param  string  $column
+     * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
+     */
+    public function timestamp(string $column): ColumnDefinition
+    {
+        return $this->addColumn('timestamp', $column);
+    }
+
+    /**
+     * Add nullable creation and update timestamps to the table.
+     *
+     * @return void
+     */
+    public function timestamps(): void
+    {
+        $this->timestamp('created_at')->nullable();
+        $this->timestamp('updated_at')->nullable();
+    }
+
+    /**
      * Specify the character set for the table.
      *
      * @param  string  $charset

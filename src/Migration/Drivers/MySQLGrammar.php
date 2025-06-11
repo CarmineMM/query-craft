@@ -69,8 +69,16 @@ class MySQLGrammar implements Grammar
         return match ($column['type']) {
             'increments' => 'INT',
             'integer' => 'INT',
+            'tinyInteger' => 'TINYINT',
+            'smallInteger' => 'SMALLINT',
+            'mediumInteger' => 'MEDIUMINT',
             'bigInteger' => 'BIGINT',
             'string' => 'VARCHAR(' . ($column['length'] ?? 255) . ')',
+            'text' => 'TEXT',
+            'mediumText' => 'MEDIUMTEXT',
+            'longText' => 'LONGTEXT',
+            'enum' => 'ENUM("' . implode('", "', $column['allowed']) . '")',
+            'timestamp' => 'TIMESTAMP',
             default => $column['type'],
         };
     }

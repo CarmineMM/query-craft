@@ -86,8 +86,16 @@ class SQLServerGrammar implements Grammar
         return match ($column['type']) {
             'increments' => 'INT',
             'integer' => 'INT',
+            'tinyInteger' => 'TINYINT',
+            'smallInteger' => 'SMALLINT',
+            'mediumInteger' => 'INT', // SQL Server does not have a MEDIUMINT type
             'bigInteger' => 'BIGINT',
             'string' => 'NVARCHAR(' . ($column['length'] ?? 255) . ')',
+            'text' => 'NVARCHAR(MAX)',
+            'mediumText' => 'NVARCHAR(MAX)',
+            'longText' => 'NVARCHAR(MAX)',
+            'enum' => 'NVARCHAR(' . ($column['length'] ?? 255) . ')', // SQL Server ENUM type is handled with a CHECK constraint, for simplicity we use NVARCHAR
+            'timestamp' => 'DATETIME2',
             default => $column['type'],
         };
     }

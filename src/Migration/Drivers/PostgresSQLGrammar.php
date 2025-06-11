@@ -86,8 +86,16 @@ class PostgresSQLGrammar implements Grammar
         return match ($column['type']) {
             'increments' => 'SERIAL',
             'integer' => 'INTEGER',
+            'tinyInteger' => 'SMALLINT', // PostgreSQL does not have a TINYINT type
+            'smallInteger' => 'SMALLINT',
+            'mediumInteger' => 'INTEGER', // PostgreSQL does not have a MEDIUMINT type
             'bigInteger' => 'BIGINT',
             'string' => 'VARCHAR(' . ($column['length'] ?? 255) . ')',
+            'text' => 'TEXT',
+            'mediumText' => 'TEXT',
+            'longText' => 'TEXT',
+            'enum' => 'VARCHAR(' . ($column['length'] ?? 255) . ')', // PostgreSQL ENUM type is more complex to handle here, using VARCHAR with a CHECK constraint is a better approach but for simplicity we use VARCHAR
+            'timestamp' => 'TIMESTAMP',
             default => $column['type'],
         };
     }
