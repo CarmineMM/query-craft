@@ -18,6 +18,10 @@ class Casts
         'object' => TheCasts\JsonCasts::class,
         'datetime' => TheCasts\DatetimeCasts::class,
         'array' => TheCasts\ArrayCasts::class,
+        'int' => TheCasts\IntCast::class,
+        'integer' => TheCasts\IntCast::class,
+        'float' => TheCasts\FloatCast::class,
+        'double' => TheCasts\FloatCast::class,
     ];
 
     /**
@@ -57,17 +61,29 @@ class Casts
      * Getter type casts
      *
      * @param mixed $data
-     * @param string $cast
+     * @param Model $model
+     * @param string|array $cast
      * @return mixed
      */
-    public function getter(mixed $data, Model $model, string $cast): mixed
+    public function getter(mixed $data, Model $model, $cast): mixed
     {
-        // Comprobar si el cast predeterminado existe
-        if (isset($this->defaultCastable[$cast])) {
-            return $this->applyCast($data, $this->defaultCastable[$cast], $model, 'get');
+        $castType = is_array($cast) ? $cast['type'] : $cast;
+        $parameters = is_array($cast) ? ($cast['parameters'] ?? []) : [];
+        
+        // Check if the default cast exists
+        if (isset($this->defaultCastable[$castType])) {
+            $castClass = $this->defaultCastable[$castType];
+            $instance = !empty($parameters) ? new $castClass(...$parameters) : new $castClass();
+            return $instance->get($data, $model);
         }
 
-        return $this->applyCast($data, $cast, $model, 'get');
+        // For custom cast classes
+        if (!class_exists($castType)) {
+            throw new \Exception("The cast {$castType} does not exist", 500);
+        }
+        
+        $instance = !empty($parameters) ? new $castType(...$parameters) : new $castType();
+        return $instance->get($data, $model);
     }
 
     /**
@@ -75,16 +91,27 @@ class Casts
      *
      * @param mixed $data
      * @param Model $model
-     * @param string $cast
+     * @param string|array $cast
      * @return mixed
      */
-    public function setter(mixed $data, Model $model, string $cast): mixed
+    public function setter(mixed $data, Model $model, $cast): mixed
     {
-        // Comprobar si el cast predeterminado existe
-        if (isset($this->defaultCastable[$cast])) {
-            return $this->applyCast($data, $this->defaultCastable[$cast], $model, 'set');
+        $castType = is_array($cast) ? $cast['type'] : $cast;
+        $parameters = is_array($cast) ? ($cast['parameters'] ?? []) : [];
+        
+        // Check if the default cast exists
+        if (isset($this->defaultCastable[$castType])) {
+            $castClass = $this->defaultCastable[$castType];
+            $instance = !empty($parameters) ? new $castClass(...$parameters) : new $castClass();
+            return $instance->set($data, $model);
         }
 
-        return $this->applyCast($data, $cast, $model, 'set');
+        // For custom cast classes
+        if (!class_exists($castType)) {
+            throw new \Exception("The cast {$castType} does not exist", 500);
+        }
+        
+        $instance = !empty($parameters) ? new $castType(...$parameters) : new $castType();
+        return $instance->set($data, $model);
     }
 }

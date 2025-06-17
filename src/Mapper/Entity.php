@@ -62,15 +62,55 @@ class Entity
     }
 
     /**
+     * Extract casts from property attributes
+     *
+     * @return array
+     */
+    private function extractCastsFromAttributes(): array
+    {
+        $casts = [];
+        $reflection = new \ReflectionClass($this);
+        
+        foreach ($reflection->getProperties() as $property) {
+            $attributes = $property->getAttributes(\CarmineMM\QueryCraft\Attributes\Cast::class);
+            
+            if (!empty($attributes)) {
+                $cast = $attributes[0]->newInstance();
+                $propertyName = $property->getName();
+                
+                // If there are parameters, store them with the cast type
+                if (!empty($cast->parameters)) {
+                    $casts[$propertyName] = [
+                        'type' => $cast->type,
+                        'parameters' => $cast->parameters
+                    ];
+                } else {
+                    $casts[$propertyName] = $cast->type;
+                }
+            }
+        }
+        
+        return $casts;
+    }
+
+    /**
      * SetAttributes
      *
      * @param array $attributes
+     * @param array $loadWith
      * @return void
      */
     private function setAttributes(array $attributes, array $loadWith): void
     {
         $hiddenFields = in_array('hidden', $loadWith) ? $this->model->getHiddenFields() : [];
-        $casts = in_array('casts', $loadWith) ? $this->getCasts() : [];
+        
+        // Get casts from both model and attributes
+        $modelCasts = in_array('casts', $loadWith) ? $this->getCasts() : [];
+        $attributeCasts = $this->extractCastsFromAttributes();
+        
+        // Combinar los casts (los atributos tienen prioridad sobre los del modelo)
+        $casts = array_merge($modelCasts, $attributeCasts);
+        
         $director = new Casts;
 
         foreach ($attributes as $key => $value) {
@@ -80,13 +120,14 @@ class Entity
             }
 
             // Casts Fields and regular fields
-            if (in_array($key, array_keys($casts))) {
+            if (isset($casts[$key])) {
                 $this->$key = $director->getter($value, $this->model, $casts[$key]);
             } else {
                 $this->$key = $value;
             }
         }
-        $this->attributes = $attributes;
+        
+        $this->attributes = array_keys($attributes);
 
         // Cargar los timestamps casts
         $this->__loadTimestamps($director);
