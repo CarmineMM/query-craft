@@ -35,6 +35,11 @@ final class DB
      */
     protected static bool $allow_bulk_delete = false;
 
+    /**
+     * Construct
+     *
+     * @param Driver $driver
+     */
     public function __construct(
         private Driver $driver
     ) {

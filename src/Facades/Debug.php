@@ -1,9 +1,14 @@
 <?php
 
-namespace CarmineMM\QueryCraft;
+namespace CarmineMM\QueryCraft\Facades;
 
 final class Debug
 {
+    /**
+     * List query executed
+     *
+     * @var array
+     */
     public static array $queries = [];
 
     /**

@@ -3,8 +3,8 @@
 namespace CarmineMM\QueryCraft\Drivers;
 
 use CarmineMM\QueryCraft\Adapter\SQLBaseDriver;
-use CarmineMM\QueryCraft\Cache;
-use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Facades\Cache;
+use CarmineMM\QueryCraft\Facades\Connection;
 use CarmineMM\QueryCraft\Contracts\Driver;
 use CarmineMM\QueryCraft\Data\Model;
 

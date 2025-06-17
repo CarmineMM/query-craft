@@ -2,7 +2,7 @@
 
 namespace CarmineMM\QueryCraft\Data;
 
-use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Facades\Connection;
 use CarmineMM\QueryCraft\Contracts\Driver;
 use CarmineMM\QueryCraft\Facades\DB;
 use CarmineMM\QueryCraft\Mapper\Entity;

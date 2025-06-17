@@ -3,7 +3,7 @@
 namespace CarmineMM\QueryCraft\Migration;
 
 use Closure;
-use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Facades\Connection;
 use CarmineMM\QueryCraft\Drivers\MySQL;
 use CarmineMM\QueryCraft\Drivers\PostgresSQL;
 use CarmineMM\QueryCraft\Drivers\SQLServer;

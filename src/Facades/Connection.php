@@ -1,8 +1,7 @@
 <?php
 
-namespace CarmineMM\QueryCraft;
+namespace CarmineMM\QueryCraft\Facades;
 
-use CarmineMM\QueryCraft\Contracts\Driver;
 use CarmineMM\QueryCraft\Data\Model;
 use CarmineMM\QueryCraft\Drivers\MySQL;
 use CarmineMM\QueryCraft\Drivers\PostgresSQL;
@@ -93,7 +92,7 @@ final class Connection
      */
     public static function pdo(
         string $connection = 'default',
-        Model $model = null,
+        ?Model $model = null,
     ): mixed {
         $connections = Connection::connections();
 

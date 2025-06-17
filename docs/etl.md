@@ -5,7 +5,7 @@ Query Craft offers an ETL to connect data between databases.
 ### Configurar ambas conexiones
 
 ```php
-use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Facades\Connection;
 
 Connection::setConnection('primary_connection', [
     'driver' => 'mysql',

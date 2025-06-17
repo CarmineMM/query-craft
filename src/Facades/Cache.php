@@ -1,6 +1,6 @@
 <?php
 
-namespace CarmineMM\QueryCraft;
+namespace CarmineMM\QueryCraft\Facades;
 
 /**
  * Cache only memory, not persistent

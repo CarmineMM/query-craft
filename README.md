@@ -12,7 +12,7 @@ composer require carminemm/query-craft
 ## Usage
 
 ```php
-use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Facades\Connection;
 use CarmineMM\QueryCraft\Data\Model;
 
 Connection::connect(config: [

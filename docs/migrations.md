@@ -30,21 +30,21 @@ Schema::create('users', function (Blueprint $table) {
 
 The schema builder provides a variety of column types that you may use when building your tables:
 
-| Command | Description |
-| --- | --- |
-| `$table->increments('id');` | Auto-incrementing UNSIGNED INTEGER (primary key). |
-| `$table->integer('votes');` | INTEGER equivalent. |
-| `$table->tinyInteger('votes');` | TINYINT equivalent. |
-| `$table->smallInteger('votes');` | SMALLINT equivalent. |
-| `$table->mediumInteger('votes');` | MEDIUMINT equivalent. |
-| `$table->bigInteger('votes');` | BIGINT equivalent. |
-| `$table->string('name', 100);` | VARCHAR equivalent with a default length of 255. |
-| `$table->text('description');` | TEXT equivalent. |
-| `$table->mediumText('description');` | MEDIUMTEXT equivalent. |
-| `$table->longText('description');` | LONGTEXT equivalent. |
-| `$table->enum('level', ['easy', 'hard']);` | ENUM equivalent. |
-| `$table->timestamp('added_on');` | TIMESTAMP equivalent. |
-| `$table->timestamps();` | Adds nullable `created_at` and `updated_at` TIMESTAMP columns. |
+| Command                                    | Description                                                    |
+| ------------------------------------------ | -------------------------------------------------------------- |
+| `$table->increments('id');`                | Auto-incrementing UNSIGNED INTEGER (primary key).              |
+| `$table->integer('votes');`                | INTEGER equivalent.                                            |
+| `$table->tinyInteger('votes');`            | TINYINT equivalent.                                            |
+| `$table->smallInteger('votes');`           | SMALLINT equivalent.                                           |
+| `$table->mediumInteger('votes');`          | MEDIUMINT equivalent.                                          |
+| `$table->bigInteger('votes');`             | BIGINT equivalent.                                             |
+| `$table->string('name', 100);`             | VARCHAR equivalent with a default length of 255.               |
+| `$table->text('description');`             | TEXT equivalent.                                               |
+| `$table->mediumText('description');`       | MEDIUMTEXT equivalent.                                         |
+| `$table->longText('description');`         | LONGTEXT equivalent.                                           |
+| `$table->enum('level', ['easy', 'hard']);` | ENUM equivalent.                                               |
+| `$table->timestamp('added_on');`           | TIMESTAMP equivalent.                                          |
+| `$table->timestamps();`                    | Adds nullable `created_at` and `updated_at` TIMESTAMP columns. |
 
 ## Column Modifiers
 
@@ -56,18 +56,18 @@ $table->string('email')->nullable();
 
 Below is a list of all the available column modifiers.
 
-| Modifier | Description |
-| --- | --- |
+| Modifier       | Description                                        |
+| -------------- | -------------------------------------------------- |
 | `->nullable()` | Allows NULL values to be inserted into the column. |
-| `->unsigned()` | Set INTEGER columns as UNSIGNED (MySQL only). |
-| `->unique()` | Adds a "unique" index. |
+| `->unsigned()` | Set INTEGER columns as UNSIGNED (MySQL only).      |
+| `->unique()`   | Adds a "unique" index.                             |
 
 ## Database Configuration
 
 Before running migrations, you need to configure your database connection using the `Connection::connect` method.
 
 ```php
-use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Facades\Connection;
 
 Connection::connect('default', [
     'driver'   => 'mysql', // 'mysql', 'pgsql', or 'sqlsrv'

@@ -9,7 +9,7 @@ composer require carminemm/query-craft
 You can have an instance anywhere in your code.
 
 ```php
-use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Facades\Connection;
 
 Connection::connect(config: [
     'driver' => 'mysql',
@@ -24,7 +24,7 @@ Connection::connect(config: [
 ## Multiple connections
 
 ```php
-use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Facades\Connection;
 
 Connection::connect(
     name: 'config-1',
@@ -53,7 +53,7 @@ Connection::connect('config-2', [
 ## Schema
 
 ```php
-use CarmineMM\QueryCraft\Connection;
+use CarmineMM\QueryCraft\Facades\Connection;
 
 Connection::connect(
     name: 'config-1',
