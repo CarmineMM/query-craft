@@ -1,6 +1,6 @@
 # Query Craft
 
-Query Craft is an ORM based on Data Mapper pattern, able to connect to **MySQL** and **Postgres**.
+Query Craft is an ORM based on Data Mapper pattern, able to connect to **MySQL**, **Postgres** and **SQL Server**.
 A Extractor-Transformer-Loader (ETL) is also at your disposal.
 
 ## Installation
