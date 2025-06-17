@@ -9,7 +9,11 @@ use CarmineMM\UnitsConversion\Conversion\DigitalUnitsConversion;
 use CarmineMM\UnitsConversion\Conversion\TimeConversion;
 
 /**
- * Constructor para obtener la data
+ * ETL Factory
+ *
+ * @package CarmineMM\QueryCraft\ETL
+ * @author Carmine Maggio <carminemaggiom@gmail.com>
+ * @version 1.0.0
  */
 class Factory
 {
@@ -21,7 +25,7 @@ class Factory
     private Extract $extractor;
 
     /**
-     * Define que atributos extraer
+     * Indicate which attributes to extract
      *
      * @var array
      */
@@ -64,7 +68,7 @@ class Factory
     }
 
     /**
-     * Indica que atributos específicos se van a extraer
+     * Indicate which attributes to extract
      *
      * @param array $attributes
      * @return Factory
@@ -76,7 +80,7 @@ class Factory
     }
 
     /**
-     * Ejecutar ETL
+     * Execute ETL
      *
      * @return void
      */

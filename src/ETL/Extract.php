@@ -5,8 +5,8 @@ namespace CarmineMM\QueryCraft\ETL;
 use CarmineMM\QueryCraft\Data\Model;
 
 /**
- * Extrae la data de la base de datos objetivo,
- * este devuelve la data en split de 1.000 rows.
+ * Extract the target database data,
+ * This returns the data on Split of 20.000 Rows.
  */
 class Extract
 {
@@ -18,14 +18,14 @@ class Extract
     private int $offset = 0;
 
     /**
-     * Indica si se requieren mas extracciones
+     * Indicate if more extractions are required
      *
      * @var boolean
      */
     public bool $requiredMoreExtract = true;
 
     /**
-     * Atributos a extraer
+     * Indicate which attributes to extract
      *
      * @var array
      */
@@ -44,7 +44,7 @@ class Extract
     }
 
     /**
-     * Indica cuantos rows se extraen
+     * Indicate how many rows to extract
      *
      * @param int $splitIn
      * @return Extract
@@ -56,7 +56,7 @@ class Extract
     }
 
     /**
-     * Indica cuantos rows se extraen
+     * Indicate which attributes to extract
      *
      * @param array $attributes
      * @return Extract
@@ -68,7 +68,7 @@ class Extract
     }
 
     /**
-     * Extrae la data
+     * Extract the data
      *
      * @return array
      */
