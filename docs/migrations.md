@@ -19,7 +19,7 @@ use CarmineMM\QueryCraft\Migration\Blueprint;
 use CarmineMM\QueryCraft\Migration\Schema;
 
 Schema::create('users', function (Blueprint $table) {
-    $table->increments('id');
+    $table->id();
     $table->string('name');
     $table->string('email')->unique();
     $table->timestamps();
@@ -32,7 +32,9 @@ The schema builder provides a variety of column types that you may use when buil
 
 | Command                                    | Description                                                    |
 | ------------------------------------------ | -------------------------------------------------------------- |
-| `$table->increments('id');`                | Auto-incrementing UNSIGNED INTEGER (primary key).              |
+| `$table->id();`                            | Create Auto-incrementing column "id" UNSIGNED INTEGER. (PK)    |
+| `$table->increments('id');`                | Auto-incrementing UNSIGNED INTEGER (PK).                       |
+| `$table->increments('id', 'small');`       | Auto-incrementing UNSIGNED SMALLINT (PK).                      |
 | `$table->integer('votes');`                | INTEGER equivalent.                                            |
 | `$table->tinyInteger('votes');`            | TINYINT equivalent.                                            |
 | `$table->smallInteger('votes');`           | SMALLINT equivalent.                                           |

@@ -84,8 +84,7 @@ class PostgresSQLGrammar implements Grammar
     protected function getType(array $column): string
     {
         return match ($column['type']) {
-            'increments' => 'SERIAL',
-            'integer' => 'INTEGER',
+            'integer' => ($column['length'] ?? '') === 'big' ? 'BIGINT' : 'INT',
             'tinyInteger' => 'SMALLINT', // PostgreSQL does not have a TINYINT type
             'smallInteger' => 'SMALLINT',
             'mediumInteger' => 'INTEGER', // PostgreSQL does not have a MEDIUMINT type

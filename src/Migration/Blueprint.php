@@ -81,14 +81,30 @@ class Blueprint
     }
 
     /**
-     * Create a new auto-incrementing integer (primary key) column on the table.
+     * Create a new auto-incrementing unsigned big integer (primary key) column on the table.
      *
      * @param  string  $column
      * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
      */
-    public function increments(string $column): ColumnDefinition
+    /**
+     * Create a new auto-incrementing unsigned big integer (primary key) column on the table.
+     *
+     * @param  string  $column
+     * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
+     */
+    public function increments(string $column, string $length = 'big'): ColumnDefinition
     {
-        return $this->addColumn('increments', $column);
+        return $this->addColumn('increments', $column, ['length' => $length]);
+    }
+
+    /**
+     * Create a new auto-incrementing unsigned big integer (primary key) column named 'id'.
+     *
+     * @return \CarmineMM\QueryCraft\Migration\ColumnDefinition
+     */
+    public function id(): ColumnDefinition
+    {
+        return $this->increments('id');
     }
 
     /**

@@ -67,8 +67,7 @@ class MySQLGrammar implements Grammar
     protected function getType(array $column): string
     {
         return match ($column['type']) {
-            'increments' => 'INT',
-            'integer' => 'INT',
+            'integer' => ($column['length'] ?? '') === 'big' ? 'BIGINT' : 'INT',
             'tinyInteger' => 'TINYINT',
             'smallInteger' => 'SMALLINT',
             'mediumInteger' => 'MEDIUMINT',

@@ -84,8 +84,7 @@ class SQLServerGrammar implements Grammar
     protected function getType(array $column): string
     {
         return match ($column['type']) {
-            'increments' => 'INT',
-            'integer' => 'INT',
+            'integer' => ($column['length'] ?? '') === 'big' ? 'BIGINT' : 'INT',
             'tinyInteger' => 'TINYINT',
             'smallInteger' => 'SMALLINT',
             'mediumInteger' => 'INT', // SQL Server does not have a MEDIUMINT type
