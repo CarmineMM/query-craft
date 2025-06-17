@@ -28,41 +28,133 @@ abstract class SQLBaseDriver extends CarryOut
      */
     public static $selectFunction = [
         // Aggregate functions
-        'COUNT(', 'SUM(', 'AVG(', 'MAX(', 'MIN(', 'GROUP_CONCAT(', 'STRING_AGG(',
-        'ARRAY_AGG(', 'JSON_AGG(', 'JSON_OBJECT_AGG(', 'JSON_ARRAYAGG(',
-        
+        'COUNT(',
+        'SUM(',
+        'AVG(',
+        'MAX(',
+        'MIN(',
+        'GROUP_CONCAT(',
+        'STRING_AGG(',
+        'ARRAY_AGG(',
+        'JSON_AGG(',
+        'JSON_OBJECT_AGG(',
+        'JSON_ARRAYAGG(',
+
         // String functions
-        'CONCAT(', 'CONCAT_WS(', 'SUBSTRING(', 'SUBSTR(', 'LEFT(', 'RIGHT(', 
-        'LENGTH(', 'CHAR_LENGTH(', 'LOWER(', 'UPPER(', 'TRIM(', 'LTRIM(', 
-        'RTRIM(', 'REPLACE(', 'REVERSE(', 'REPEAT(', 'SPACE(', 'FORMAT(',
-        
+        'CONCAT(',
+        'CONCAT_WS(',
+        'SUBSTRING(',
+        'SUBSTR(',
+        'LEFT(',
+        'RIGHT(',
+        'LENGTH(',
+        'CHAR_LENGTH(',
+        'LOWER(',
+        'UPPER(',
+        'TRIM(',
+        'LTRIM(',
+        'RTRIM(',
+        'REPLACE(',
+        'REVERSE(',
+        'REPEAT(',
+        'SPACE(',
+        'FORMAT(',
+
         // Date/Time functions
-        'NOW(', 'CURDATE(', 'CURTIME(', 'DATE_ADD(', 'DATE_SUB(', 'DATEDIFF(',
-        'DATE_FORMAT(', 'DAY(', 'MONTH(', 'YEAR(', 'HOUR(', 'MINUTE(', 'SECOND(',
-        'EXTRACT(', 'DATE_PART(', 'TO_CHAR(', 'TO_DATE(', 'TO_TIMESTAMP(',
-        
+        'NOW(',
+        'CURDATE(',
+        'CURTIME(',
+        'DATE_ADD(',
+        'DATE_SUB(',
+        'DATEDIFF(',
+        'DATE_FORMAT(',
+        'DAY(',
+        'MONTH(',
+        'YEAR(',
+        'HOUR(',
+        'MINUTE(',
+        'SECOND(',
+        'EXTRACT(',
+        'DATE_PART(',
+        'TO_CHAR(',
+        'TO_DATE(',
+        'TO_TIMESTAMP(',
+
         // Conditional functions
-        'COALESCE(', 'NULLIF(', 'IFNULL(', 'ISNULL(', 'NVL(', 'CASE ', 'IIF(',
-        
+        'COALESCE(',
+        'NULLIF(',
+        'IFNULL(',
+        'ISNULL(',
+        'NVL(',
+        'CASE ',
+        'IIF(',
+
         // Window functions
-        'ROW_NUMBER(', 'RANK(', 'DENSE_RANK(', 'NTILE(', 'LEAD(', 'LAG(',
-        'FIRST_VALUE(', 'LAST_VALUE(', 'PERCENT_RANK(', 'CUME_DIST(',
-        
+        'ROW_NUMBER(',
+        'RANK(',
+        'DENSE_RANK(',
+        'NTILE(',
+        'LEAD(',
+        'LAG(',
+        'FIRST_VALUE(',
+        'LAST_VALUE(',
+        'PERCENT_RANK(',
+        'CUME_DIST(',
+
         // Math functions
-        'ABS(', 'ROUND(', 'CEIL(', 'FLOOR(', 'POWER(', 'SQRT(', 'MOD(', 'RAND(',
-        
+        'ABS(',
+        'ROUND(',
+        'CEIL(',
+        'FLOOR(',
+        'POWER(',
+        'SQRT(',
+        'MOD(',
+        'RAND(',
+
         // Type conversion
-        'CAST(', 'CONVERT(', 'TRY_CAST(', 'TRY_CONVERT(',
-        
+        'CAST(',
+        'CONVERT(',
+        'TRY_CAST(',
+        'TRY_CONVERT(',
+
         // JSON functions (common)
-        'JSON_VALUE(', 'JSON_QUERY(', 'JSON_EXTRACT(', 'JSON_CONTAINS(',
-        
+        'JSON_VALUE(',
+        'JSON_QUERY(',
+        'JSON_EXTRACT(',
+        'JSON_CONTAINS(',
+
         // Other common functions
-        'COALESCE(', 'NULLIF(', 'IFNULL(', 'ISNULL(', 'NVL(', 'GREATEST(', 'LEAST(',
-        'INSTR(', 'POSITION(', 'LOCATE(', 'CHARINDEX(', 'PATINDEX(', 'SOUNDEX(',
-        'DIFFERENCE(', 'REPLICATE(', 'STUFF(', 'TRANSLATE(', 'ASCII(', 'CHR(',
-        'UNICODE(', 'NCHAR(', 'REPLICATE(', 'SPACE(', 'STR(', 'QUOTENAME(',
-        'PARSENAME(', 'ISDATE(', 'ISNUMERIC(', 'ISJSON(', 'TRY_PARSE(', 'TRY_CONVERT(' 
+        'COALESCE(',
+        'NULLIF(',
+        'IFNULL(',
+        'ISNULL(',
+        'NVL(',
+        'GREATEST(',
+        'LEAST(',
+        'INSTR(',
+        'POSITION(',
+        'LOCATE(',
+        'CHARINDEX(',
+        'PATINDEX(',
+        'SOUNDEX(',
+        'DIFFERENCE(',
+        'REPLICATE(',
+        'STUFF(',
+        'TRANSLATE(',
+        'ASCII(',
+        'CHR(',
+        'UNICODE(',
+        'NCHAR(',
+        'REPLICATE(',
+        'SPACE(',
+        'STR(',
+        'QUOTENAME(',
+        'PARSENAME(',
+        'ISDATE(',
+        'ISNUMERIC(',
+        'ISJSON(',
+        'TRY_PARSE(',
+        'TRY_CONVERT('
     ];
 
     /**
@@ -662,6 +754,18 @@ abstract class SQLBaseDriver extends CarryOut
         }
     }
 
+    /**
+     * Updates records in the database.
+     *
+     * @param array|Entity $values The new values.
+     * @param Model $model The model instance.
+     * @return array The result of the execution.
+     * @throws Exception If trying to perform a bulk update without a WHERE clause.
+     *
+     * @example
+     * // Update user with id 1
+     * $db->where('id', 1)->update(['status' => 'inactive'], new User());
+     */
     public function update(array|Entity $values, Model $model): array
     {
         if (empty($this->wheres) && !$model->allow_bulk_update) {
@@ -686,6 +790,12 @@ abstract class SQLBaseDriver extends CarryOut
         $setString = implode(', ', $setClauses);
         $this->sql = str_replace('{set}', $setString, $this->sql);
 
+        return $this->exec();
+    }
+
+    public function truncate(string $table): array
+    {
+        $this->sql = "TRUNCATE TABLE {$this->addQuotes($table)}";
         return $this->exec();
     }
 }

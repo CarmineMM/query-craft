@@ -54,4 +54,6 @@ interface Driver
     public function orderBy(string $column, string $direction = 'ASC'): static;
 
     public function statement(string $query): bool;
+
+    public function truncate(string $table): void;
 }

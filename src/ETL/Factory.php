@@ -3,7 +3,7 @@
 namespace CarmineMM\QueryCraft\ETL;
 
 use CarmineMM\QueryCraft\Data\Model;
-use CarmineMM\QueryCraft\DB;
+use CarmineMM\QueryCraft\Facades\DB;
 use CarmineMM\QueryCraft\ETL\Transform;
 use CarmineMM\UnitsConversion\Conversion\DigitalUnitsConversion;
 use CarmineMM\UnitsConversion\Conversion\TimeConversion;

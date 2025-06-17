@@ -3,7 +3,7 @@
 namespace CarmineMM\QueryCraft\Data;
 
 use CarmineMM\QueryCraft\Cache;
-use CarmineMM\QueryCraft\DB;
+use CarmineMM\QueryCraft\Facades\DB;
 use CarmineMM\QueryCraft\Debug;
 
 abstract class CarryOut

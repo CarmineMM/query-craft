@@ -4,7 +4,7 @@ namespace CarmineMM\QueryCraft\Casts;
 
 use CarmineMM\QueryCraft\Contracts\Casts;
 use CarmineMM\QueryCraft\Data\Model;
-use CarmineMM\QueryCraft\DB;
+use CarmineMM\QueryCraft\Facades\DB;
 use DateTime;
 use DateTimeZone;
 

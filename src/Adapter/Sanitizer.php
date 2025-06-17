@@ -2,7 +2,7 @@
 
 namespace CarmineMM\QueryCraft\Adapter;
 
-use CarmineMM\QueryCraft\DB;
+use CarmineMM\QueryCraft\Facades\DB;
 
 class Sanitizer
 {

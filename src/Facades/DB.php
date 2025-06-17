@@ -1,6 +1,6 @@
 <?php
 
-namespace CarmineMM\QueryCraft;
+namespace CarmineMM\QueryCraft\Facades;
 
 use CarmineMM\QueryCraft\Contracts\Driver;
 
@@ -14,11 +14,6 @@ use CarmineMM\QueryCraft\Contracts\Driver;
  */
 final class DB
 {
-    /**
-     * @var Driver
-     */
-    private Driver $driver;
-
     /**
      * Timezone
      *
@@ -39,6 +34,12 @@ final class DB
      * @var boolean
      */
     protected static bool $allow_bulk_delete = false;
+
+    public function __construct(
+        private Driver $driver
+    ) {
+        //..
+    }
 
     /**
      * Debug mode
@@ -66,6 +67,17 @@ final class DB
     public static function getDebugMode(): bool
     {
         return self::$debug;
+    }
+
+    /**
+     * Set Driver instance
+     *
+     * @param Driver $driver
+     * @return static
+     */
+    public static function driver(Driver $driver): static
+    {
+        return new static($driver);
     }
 
     /**
@@ -130,5 +142,16 @@ final class DB
     public static function isMassDeletionAllowed(): bool
     {
         return self::$allow_bulk_delete;
+    }
+
+    /**
+     * Truncate table
+     *
+     * @param string $table
+     * @return void
+     */
+    public function truncate(string $table): void
+    {
+        $this->driver->truncate($table);
     }
 }

@@ -11,7 +11,7 @@ By default the models and the DB facade do not let delete massively, (make a del
 You can modify this for a specific model, or for all models
 
 ```php
-use CarmineMM\QueryCraft\DB;
+use CarmineMM\QueryCraft\Facades\DB;
 
 // For a specific model
 $model->allowBulkDelete();
@@ -27,7 +27,7 @@ DB::allowBulkDelete();
 The fields like _created_at_, _updated_at_, _deleted_at_ are used by default, but you can modify them
 
 ```php
-use CarmineMM\QueryCraft\DB;
+use CarmineMM\QueryCraft\Facades\DB;
 
 // For a specific model
 $model->setCreatedAtField('created_at');

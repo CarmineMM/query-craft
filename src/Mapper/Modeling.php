@@ -3,7 +3,7 @@
 namespace CarmineMM\QueryCraft\Mapper;
 
 use CarmineMM\QueryCraft\Data\Model;
-use CarmineMM\QueryCraft\DB;
+use CarmineMM\QueryCraft\Facades\DB;
 use DateTime;
 use DateTimeZone;
 
