@@ -668,6 +668,12 @@ abstract class SQLBaseDriver extends CarryOut
         $fillable_data = Modeling::fillableData($model, $values);
         ['values' => $insertValues] = Modeling::applyTimeStamps($model, $fillable_data);
 
+        // Aplicar casts definidos por atributos si la entidad los tiene
+        if ($values instanceof Entity && method_exists($values, 'getCasts')) {
+            $casts = $values->getCasts();
+            $insertValues = $values->castAttributes($insertValues, $casts);
+        }
+
         $keys = [];
         $placeholder = [];
         foreach ($insertValues as $key => $value) {
@@ -777,6 +783,12 @@ abstract class SQLBaseDriver extends CarryOut
         $values = $values instanceof Entity ? $values->toArray() : $values;
         $fillable_data = Modeling::fillableData($model, $values);
         $update_data = Modeling::applyUpdatedAt($model, $fillable_data)['values'];
+
+        // Aplicar casts definidos por atributos si la entidad los tiene
+        if ($values instanceof Entity && method_exists($values, 'getCasts')) {
+            $casts = $values->getCasts();
+            $update_data = $values->castAttributes($update_data, $casts);
+        }
 
         $setClauses = [];
         $updateBindings = [];
