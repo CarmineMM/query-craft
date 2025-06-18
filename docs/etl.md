@@ -75,18 +75,18 @@ $etl->extractAttributes([
 ]);
 ```
 
-## Process ETL
-
-```php
-$etl->processEtl(true); // Force the debug mode
-```
-
 ## Truncate table before insert
 
 You can truncate the table before inserting the data.
 
 ```php
 $etl->truncate(); // Truncate the table before inserting
+```
+
+## Process ETL
+
+```php
+$etl->processEtl(true); // Force the debug mode
 ```
 
 ## Considerations

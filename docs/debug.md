@@ -4,5 +4,12 @@ Puedes activar el debug para ver las consultas ejecutadas, el tiempo que tardan 
 También puedes tener este debug a la hora de ejecutar el ETL.
 
 ```php
-\CarmineMM\QueryCraft\Facades\DB::debugMode(true);
+\CarmineMM\QueryCraft\Facades\Debug::debugMode();
+\CarmineMM\QueryCraft\Facades\Debug::debugMode(false); // Deactivate the debug
+```
+
+## Check the queries made
+
+```php
+\CarmineMM\QueryCraft\Facades\Debug::getQueries();
 ```

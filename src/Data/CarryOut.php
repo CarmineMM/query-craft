@@ -157,7 +157,7 @@ abstract class CarryOut
      */
     protected function exec(array $params = []): array
     {
-        if (DB::getDebugMode()) {
+        if (Debug::getDebugMode()) {
             $startTime = microtime(true);
             $startMemory = memory_get_usage();
         }
@@ -169,7 +169,7 @@ abstract class CarryOut
         if ($this->model->hasCache() && strlen($this->sql) < 60 && Cache::has($this->sql . json_encode($this->bindings))) {
             $get = Cache::get($this->sql . json_encode($this->bindings));
 
-            if (DB::getDebugMode()) {
+            if (Debug::getDebugMode()) {
                 $endtime = microtime(true) - $startTime;
 
                 // End time
@@ -231,7 +231,7 @@ abstract class CarryOut
             }
         }
 
-        if (DB::getDebugMode()) {
+        if (Debug::getDebugMode()) {
             $endtime = microtime(true) - $startTime;
 
             // End time

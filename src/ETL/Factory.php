@@ -5,6 +5,7 @@ namespace CarmineMM\QueryCraft\ETL;
 use CarmineMM\QueryCraft\Data\Model;
 use CarmineMM\QueryCraft\Facades\DB;
 use CarmineMM\QueryCraft\ETL\Transform;
+use CarmineMM\QueryCraft\Facades\Debug;
 use CarmineMM\UnitsConversion\Conversion\DigitalUnitsConversion;
 use CarmineMM\UnitsConversion\Conversion\TimeConversion;
 
@@ -86,10 +87,10 @@ class Factory
      */
     public function processEtl($debug = true, $debugQueries = false): void
     {
-        $debug = $debug || DB::getDebugMode();
+        $debug = $debug || Debug::getDebugMode();
 
         if ($debug) {
-            DB::debugMode($debugQueries);
+            Debug::debugMode($debugQueries);
             echo "\nStart Process ETL";
             $startTime = microtime(true);
             $startMemory = memory_get_usage();
@@ -126,7 +127,7 @@ class Factory
             echo "\nTime: " . TimeConversion::fromSeconds($endTime - $startTime)->setSymbolMode('long')->smartConversion();
             echo "\nMemory: " . DigitalUnitsConversion::fromBytes(($endMemory - $startMemory))->setSymbolMode('short')->smartConversion();
             echo "\nData Inserted: {$dataInserted}";
-            DB::debugMode($debugQueries);
+            Debug::debugMode($debugQueries);
         }
     }
 }

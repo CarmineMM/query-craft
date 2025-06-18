@@ -47,13 +47,6 @@ final class DB
     }
 
     /**
-     * Debug mode
-     *
-     * @var boolean
-     */
-    protected static bool $debug = false;
-
-    /**
      * Set debug mode
      *
      * @param boolean $set
@@ -61,17 +54,7 @@ final class DB
      */
     public static function debugMode(bool $set = true): void
     {
-        self::$debug = $set;
-    }
-
-    /**
-     * Get debug mode
-     *
-     * @return boolean
-     */
-    public static function getDebugMode(): bool
-    {
-        return self::$debug;
+        Debug::debugMode($set);
     }
 
     /**
