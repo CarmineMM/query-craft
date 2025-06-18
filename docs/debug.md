@@ -10,6 +10,8 @@ También puedes tener este debug a la hora de ejecutar el ETL.
 
 ## Check the queries made
 
+Obtains the list of consultations made, the time it took and the used memory.
+
 ```php
 \CarmineMM\QueryCraft\Facades\Debug::getQueries();
 ```
