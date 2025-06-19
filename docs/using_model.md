@@ -1,48 +1,49 @@
-# Usando el Modelo
+# Using the model
 
-El modelo es la vía principal para interactuar con tus tablas de la base de datos. Te permite obtener, crear, actualizar y eliminar registros de una manera fluida e intuitiva.
+The model is the main route to interact with your database tables.It allows you to obtain, create, update and delete records in a fluid and intuitive way.
 
-> **Nota de Seguridad:** QueryCraft se encarga de entrecomillar automáticamente los nombres de las columnas y tablas (ej. `name` se convierte en `"name"`) para prevenir conflictos con palabras reservadas de SQL y mejorar la compatibilidad entre diferentes motores de base de datos.
+> **Security Note:** QueryCraft automatically encloses column and table names (e.g. `name` is converted to `"name"`) to prevent conflicts with SQL reserved words and improve compatibility between different database engines.
 
-### Obtención de Datos
+### Obtaining data
 
-#### Obtener todos los registros
+Like other ORMs, you have the option to build queries using the Model.
+
+#### Obtaining all records
 
 ```php
-// Obtiene todas las columnas de todos los registros
+// Obtains all columns of all records
 $data = $model->all();
 
-// Obtiene solo las columnas especificadas
+// Obtains only the specified columns
 $data = $model->all(['id', 'name']);
 ```
 
-#### Filtrar resultados con `where`
+#### Filtering results with `where`
 
-Puedes encadenar cláusulas `where` para construir consultas más complejas.
+You can chain `where` clauses to build more complex queries.
 
 ```php
-// Búsqueda simple: WHERE name = 'John'
+// Simple search: WHERE name = 'John'
 $data = $model->where('name', 'John')->all();
 
-// Usando otros operadores: WHERE name LIKE 'John%'
+// Using other operators: WHERE name LIKE 'John%'
 $data = $model->where('name', 'LIKE', 'John%')->all();
 
-// Encadenando cláusulas: WHERE status = 'active' AND age > 30
+// Chaining clauses: WHERE status = 'active' AND age > 30
 $data = $model->where('status', 'active')->where('age', '>', 30)->all();
 
-// Usando `orWhere`: WHERE status = 'active' OR is_premium = true
+// Using `orWhere`: WHERE status = 'active' OR is_premium = true
 $data = $model->where('status', 'active')->orWhere('is_premium', true)->all();
 ```
 
-#### Obtener el primer registro
-
-Recupera el primer registro que coincida con la consulta.
+#### Obtaining the first record
+Recover the first record that matches the consultation.
 
 ```php
 $data = $model->where('name', 'John')->first();
 ```
 
-#### Comprobar valores nulos
+#### Checking null values
 
 ```php
 // WHERE deleted_at IS NULL
@@ -52,38 +53,38 @@ $data = $model->whereNull('deleted_at')->all();
 $data = $model->whereNotNull('processed_at')->all();
 ```
 
-#### Limitar la cantidad de registros
+#### Limiting the number of records
 
 ```php
-// Obtiene los primeros 10 registros
+// Obtains the first 10 records
 $data = $model->limit(10)->all();
 
-// Obtiene 10 registros, omitiendo los primeros 20 (paginación)
+// Obtains 10 records, omitting the first 20 (pagination)
 $data = $model->limit(10, 20)->all();
 ```
 
-#### Contar registros
+#### Counting records
 
 ```php
-// Cuenta todos los registros en la tabla
+// Counts all records in the table
 $total = $model->count();
 
-// Cuenta los registros que cumplen una condición
+// Counts records that meet a condition
 $activeUsers = $model->where('status', 'active')->count();
 ```
 
-### Depurar con `toSql`
+### Debugging with `toSql`
 
-Puedes ver la consulta SQL que se generará antes de ejecutarla.
+You can view the SQL query that will be generated before executing it.
 
 ```php
 $sql = $model->where('name', 'LIKE', 'John%')->toSql();
 // SELECT * FROM "users" WHERE "name" LIKE ?
 ```
 
-## Creación de Registros
+## Creating records
 
-Creación simple usando un array.
+Simple creation using an array.
 
 ```php
 $data = $model->create([
@@ -92,7 +93,7 @@ $data = $model->create([
 ]);
 ```
 
-Creación usando una `Entity`. La ventaja es que puedes aprovechar los `casts` definidos en tu entidad.
+Creation using an `Entity`. The advantage is that you can take advantage of the `casts` defined in your entity.
 
 ```php
 $data = $model->create(new Entity([
@@ -101,9 +102,9 @@ $data = $model->create(new Entity([
 ]));
 ```
 
-## Actualización de Registros
+## Updating records
 
-Para actualizar registros, primero debes especificar qué filas modificar usando una cláusula `where`.
+To update records, first you must specify which rows to modify using a `where` clause.
 
 ```php
 $model->where('id', 1)->update([
@@ -112,12 +113,58 @@ $model->where('id', 1)->update([
 ]);
 ```
 
-## Eliminación de Registros
+## Deleting records
 
-Por seguridad, no se permiten eliminaciones masivas por defecto. Siempre debes especificar una condición `where`.
+By default, mass deletions are not allowed for security reasons. You must always specify a `where` condition.
 
 ```php
-// Elimina el usuario con id = 1
+// Deletes the user with id = 1
 $model->where('id', 1)->delete();
 ```
-Si el modelo tiene `soft deletes` habilitado, este método actualizará el campo `deleted_at` en lugar de eliminar el registro permanentemente.
+
+If the model has `soft deletes` enabled, this method will update the `deleted_at` field instead of permanently deleting the record.
+
+## Snapshots handling
+
+The snapshots functionality allows you to save and restore the state of the query builder constructor, which is useful for building complex queries in a more readable way or for reusing query parts.
+
+### Taking a Snapshot
+
+Saves the current state of the query builder constructor to be able to return to it later.
+
+```php
+// Constructs a base query
+$query = $model->where('status', 'active');
+
+// Takes a snapshot of the current query
+$query->takeSnapshot('active_users');
+
+// Continúa modificando la consulta
+$activeUsers = $query->where('last_login', '>', '2023-01-01')->all();
+```
+
+### Restoring a Snapshot
+
+Restores the state of the query builder constructor to the state saved in a previous snapshot.
+
+```php
+// Restores the query to the state saved in the snapshot 'active_users'
+$query->restoreSnapshot('active_users');
+
+// Now you can build a new query from the saved state
+$recentlyActiveUsers = $query->where('last_login', '>', '2023-06-01')->all();
+```
+
+### Using without name
+
+If you don't specify a name for the snapshot, a default name will be used.
+
+```php
+// Takes a snapshot without a name
+$model->where('status', 'active')->takeSnapshot();
+
+// Restores the last snapshot without a name
+$model->restoreSnapshot();
+```
+
+> **Note:** Snapshots are useful when you need to build variations of a base query without having to repeat the initial conditions.
