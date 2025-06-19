@@ -90,11 +90,65 @@ abstract class BaseModel
     /**
      * Constructor of the base model
      */
+    /**
+     * The raw SQL query to be executed
+     *
+     * @var string|null
+     */
+    protected ?string $rawQuery = null;
+
     public function __construct()
     {
         $this->driver = Connection::pdo($this->connection, $this);
         $this->cache = Connection::$instance->cache;
         $this->allow_bulk_delete = DB::isMassDeletionAllowed();
+    }
+
+    /**
+     * Set a raw SQL query to be executed
+     * 
+     * This method allows you to set a raw SQL query that will be executed
+     * when the exec() method is called. The query is not executed immediately,
+     * allowing you to chain other methods or set bindings before execution.
+     * 
+     * @param string $sql The raw SQL query to execute
+     * @return static Returns the current model instance for method chaining
+     */
+    public function query(string $sql): static
+    {
+        $this->rawQuery = $sql;
+        return $this;
+    }
+
+    /**
+     * Execute the raw SQL query set by the query() method
+     * 
+     * This method executes the raw SQL query that was previously set using the query() method.
+     * The query is executed using the driver's statement() method with optional parameter binding.
+     * 
+     * @param array $bindings Associative array of parameter bindings (e.g., ['id' => 1, 'status' => 'active'])
+     * @return bool Returns true on success or false on failure
+     * @throws \RuntimeException If no query has been set using query()
+     */
+    public function exec(array $bindings = []): bool
+    {
+        if ($this->rawQuery === null) {
+            throw new \RuntimeException('No query has been set. Use the query() method to set a raw SQL query.');
+        }
+
+        // If no bindings provided, execute the query directly
+        if (empty($bindings)) {
+            $result = $this->driver->statement($this->rawQuery);
+        } else {
+            // Prepare and execute with bindings
+            $stmt = $this->driver->getPdo()->prepare($this->rawQuery);
+            $result = $stmt->execute($bindings);
+        }
+
+        // Clear the query after execution
+        $this->rawQuery = null;
+
+        return $result !== false;
     }
 
     /**

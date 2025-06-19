@@ -41,3 +41,4 @@ $data = $model->all();
 -   [Debug](docs/debug.md)
 -   [ETL](docs/etl.md)
 -   [Migrations](docs/migrations.md)
+-   [Raw SQL Queries](docs/raw_queries.md)

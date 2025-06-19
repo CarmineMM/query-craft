@@ -810,4 +810,12 @@ abstract class SQLBaseDriver extends CarryOut
         $this->sql = "TRUNCATE TABLE {$this->addQuotes($table)}";
         return $this->exec();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPdo(): \PDO
+    {
+        return $this->pdo;
+    }
 }
